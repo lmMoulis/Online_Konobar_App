@@ -22,7 +22,7 @@
         android:background="@drawable/input_text">
 
         <EditText
-            android:id="@+id/searchInp"
+            android:id="@+id/waiterSearchInp"
             android:layout_width="330dp"
             android:layout_height="40dp"
             android:background="@drawable/input_text"

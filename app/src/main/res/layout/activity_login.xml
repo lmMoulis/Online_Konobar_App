@@ -37,8 +37,11 @@
             android:layout_weight="1"
             android:background="@drawable/input_text"
             android:paddingLeft="10dp"
-            android:text="Email"
-            android:textColor="#706F73" />
+            android:hint="Email"
+            android:textSize="18dp"
+            android:fontFamily="@font/kollektif"
+            android:textColor="#706F73"
+            android:textColorHint="#706F73" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,9 +59,12 @@
             android:layout_weight="1"
             android:background="@drawable/input_text"
             android:paddingLeft="10dp"
-            android:text="Lozinka"
-            android:inputType="textEmailAddress"
-            android:textColor="#706F73" />
+            android:hint="Lozinka"
+            android:textSize="18dp"
+            android:fontFamily="@font/kollektif"
+            android:inputType="textPassword"
+            android:textColor="#969599"
+            android:textColorHint="#706F73" />
     </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,6 +74,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:layout_width="wrap_content"
                 android:id="@+id/redirectRegister"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
@@ -77,8 +84,8 @@
                 android:text="Nemam račun! Registriraj se."
                 android:textAlignment="center"
                 android:textColor="#706F73"
-                android:textSize="18sp"
-                tools:textColor="#FF9F0F" />
+                android:textSize="18dp"
+                  />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -88,14 +95,14 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/regBtn"
+                android:id="@+id/loginBtn"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
                 android:background="@drawable/orange_button"
                 android:fontFamily="@font/kollektif"
-                android:text="Početak" />
+                android:text="Prijavi se" />
         </LinearLayout>
     </LinearLayout>
 

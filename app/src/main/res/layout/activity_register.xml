@@ -39,8 +39,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/input_text"
                 android:paddingLeft="10dp"
-                android:text="Ime"
-                android:textColor="#706F73" />
+                android:hint="Ime"
+                android:fontFamily="@font/kollektif"
+                android:textSize="18dp"
+                android:textColor="#969599"
+                android:textColorHint="#706F73"/>
 
             <EditText
                 android:id="@+id/prezimeInp"
@@ -50,8 +53,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/input_text"
                 android:paddingLeft="10dp"
-                android:text="Prezime"
-                android:textColor="#706F73" />
+                android:hint="Prezime"
+                android:textSize="18dp"
+                android:fontFamily="@font/kollektif"
+                android:textColor="#969599"
+                android:textColorHint="#706F73" />
         </LinearLayout>>
 
         <LinearLayout
@@ -69,9 +75,12 @@
                 android:layout_weight="1"
                 android:background="@drawable/input_text"
                 android:paddingLeft="10dp"
-                android:text="Email"
+                android:hint="Email"
+                android:fontFamily="@font/kollektif"
+                android:textSize="18dp"
                 android:inputType="textEmailAddress"
-                android:textColor="#706F73" />
+                android:textColor="#969599"
+                android:textColorHint="#706F73" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,9 +96,12 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/input_text"
+                android:hint="Broj mobitela"
+                android:fontFamily="@font/kollektif"
                 android:paddingLeft="10dp"
-                android:text="Broj mobitela"
-                android:textColor="#706F73" />
+                android:textColor="#969599"
+                android:textColorHint="#706F73"
+                android:textSize="18dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -105,18 +117,25 @@
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/input_text"
                 android:paddingLeft="10dp"
-                android:text="Spol"
-                android:textColor="#706F73" />
+                android:hint="Spol"
+                android:fontFamily="@font/kollektif"
+                android:textSize="18dp"
+                android:textColor="#969599"
+                android:textColorHint="#706F73" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/datumRodenjaInp"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/input_text"
                 android:paddingLeft="10dp"
-                android:text="Datum rođenja"
-                android:textColor="#706F73" />
+                android:hint="Datum rođenja"
+                android:fontFamily="@font/kollektif"
+                android:textAlignment="textStart"
+                android:textSize="18dp"
+                android:textColor="#969599"
+                android:textColorHint="#706F73" />
 
         </LinearLayout>
         <LinearLayout
@@ -134,9 +153,11 @@
                 android:layout_weight="1"
                 android:background="@drawable/input_text"
                 android:hint="Lozinka"
+                android:fontFamily="@font/kollektif"
+                android:textSize="18dp"
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
-                android:textColor="#706F73"
+                android:textColor="#969599"
                 android:textColorHint="#706F73" />
 
         </LinearLayout>
@@ -155,21 +176,44 @@
                 android:layout_weight="1"
                 android:background="@drawable/input_text"
                 android:hint="Ponovi lozinku"
+                android:textSize="18dp"
+                android:fontFamily="@font/kollektif"
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
-                android:textColor="#706F73"
+                android:textColor="#969599"
                 android:textColorHint="#706F73" />
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/redirectLogin"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:textAlignment="center"
+                android:textSize="18dp"
+                android:layout_weight="1"
+                android:text="Imam racun! Prijavi se"
+                android:paddingLeft="10dp"
+                android:textColor="#706F73"
+                 />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/regBtn"
+                android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginLeft="40dp"
