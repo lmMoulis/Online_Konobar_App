@@ -22,10 +22,9 @@ public class HomeScreen extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeScreen.this, Articles.class);
+                Intent intent = new Intent(HomeScreen.this, Login.class);
                 startActivity(intent);
             }
         });
     }
-
 }

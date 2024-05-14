@@ -4,6 +4,7 @@ public class LoginResponse {
     private  String id;
     private String email;
     private String lozinka;
+    private int pristup;
 
     public String getId() {
         return id;
@@ -27,5 +28,13 @@ public class LoginResponse {
 
     public void setLozinka(String lozinka) {
         this.lozinka = lozinka;
+    }
+
+    public int getPristup() {
+        return pristup;
+    }
+
+    public void setPristup(int pristup) {
+        this.pristup = pristup;
     }
 }

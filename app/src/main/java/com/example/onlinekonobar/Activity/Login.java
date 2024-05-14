@@ -3,6 +3,7 @@ package com.example.onlinekonobar.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.onlinekonobar.Activity.User.ScanQR;
+import com.example.onlinekonobar.Activity.Waiter.Articles;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.LoginRequest;
 import com.example.onlinekonobar.Api.LoginResponse;
@@ -62,13 +64,32 @@ public class Login extends AppCompatActivity {
 
                 UserService userService = Client.getService();
                 Call<LoginResponse> call = userService.loginUsers(loginRequest);
+//                SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString("username", username);
+//                editor.putString("email", email);
+//                editor.apply();
 
                 call.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if (response.isSuccessful()) {
                             LoginResponse loginResponse = response.body();
-                            Intent intent = new Intent(Login.this, ScanQR.class);
+                            int pristup=loginResponse.getPristup();
+                            Log.d("Debug","Pristup"+pristup);
+                            Intent intent;
+                            switch (pristup) {
+                                case 1:
+                                    intent = new Intent(Login.this, com.example.onlinekonobar.Activity.User.Articles.class);
+                                    break;
+                                case 2:
+                                    intent = new Intent(Login.this, Articles.class);
+                                    break;
+                                default:
+                                    Toast.makeText(Login.this, "Nepoznat pristup!", Toast.LENGTH_SHORT).show();
+                                    intent = new Intent(Login.this, Login.class);
+                                    break;
+                            }
                             startActivity(intent);
                         } else {
                             Toast.makeText(Login.this, "Greška prilikom prijave", Toast.LENGTH_SHORT).show();

@@ -22,5 +22,9 @@ public interface UserService {
 
     @GET("api/ArtikalControllers")
     Call<ArrayList<Article>> getArticlesByCategory(@Query("kategorija_id") int categoryId);
+
+    @GET("api/KategorijaControllers")
+    Call<ArrayList<Category>> getAllCategory();
+
 }
 
