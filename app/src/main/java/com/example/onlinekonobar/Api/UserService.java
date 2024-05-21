@@ -25,6 +25,10 @@ public interface UserService {
 
     @GET("api/KategorijaControllers")
     Call<ArrayList<Category>> getAllCategory();
+    @GET("api/PrilagodbaControllers")
+    Call<ArrayList<Customize>> getAllCustomize();
+
+
 
 }
 

@@ -33,6 +33,7 @@ public class Register extends AppCompatActivity {
     EditText ime,prezime,email,mob,spol,lozinka,ponLozinka;
     Button reg,datum;
     TextView login;
+    String regDatum;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +74,6 @@ public class Register extends AppCompatActivity {
                         // Formatiraj datum u hrvatski format
                         SimpleDateFormat sdf = new SimpleDateFormat("dd. MMMM yyyy.", new Locale("hr", "HR"));
                         String selectedDateString = sdf.format(selectedDate.getTime());
-
                         datum.setText(selectedDateString);
                     }
                 }, year, month, dayOfMonth);
@@ -100,12 +100,13 @@ public class Register extends AppCompatActivity {
                 registerRequest.setEmail(email.getText().toString());
                 registerRequest.setBroj_Mobitela(mob.getText().toString());
                 registerRequest.setSpol(spol.getText().toString());
-                registerRequest.setDatum_Rodenja(datum.getText().toString());
+                registerRequest.setDatum_Rodenja(regDatum);
                 registerRequest.setLozinka(lozinka.getText().toString());
                 registerRequest.setLozinka(ponLozinka.getText().toString());
+
+                //Log
                 Gson gson = new Gson();
                 String json = gson.toJson(registerRequest);
-
                 Log.d("DEBUG", "Podaci koji se šalju prema bazi (JSON format): " + json);
 
                 // Poziv metode za registraciju
@@ -136,13 +137,4 @@ public class Register extends AppCompatActivity {
             }
         });
     }
-
-    /*public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar mCalendar = Calendar.getInstance();
-        mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, month);
-        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(mCalendar.getTime());
-        datum.setText(selectedDate);
-    }*/
 }

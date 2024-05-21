@@ -1,7 +1,9 @@
 package com.example.onlinekonobar.Api;
 import com.google.gson.annotations.SerializedName;
 
-public class Article {
+import java.io.Serializable;
+
+public class Article implements Serializable {
     @SerializedName("id")
     public int Id;
     @SerializedName("naziv")
@@ -11,7 +13,7 @@ public class Article {
     @SerializedName("kategorija_Id")
     public int Kategorija_Id;
     @SerializedName("kolicina")
-    public float Kolicina;
+    public String Kolicina;
     @SerializedName("slika")
     public String Slika;
 
@@ -47,11 +49,11 @@ public class Article {
         Kategorija_Id = kategorija_Id;
     }
 
-    public float getKolicina() {
+    public String getKolicina() {
         return Kolicina;
     }
 
-    public void setKolicina(float kolicina) {
+    public void setKolicina(String kolicina) {
         Kolicina = kolicina;
     }
 

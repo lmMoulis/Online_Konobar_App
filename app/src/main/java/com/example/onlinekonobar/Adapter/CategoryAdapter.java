@@ -1,6 +1,8 @@
 package com.example.onlinekonobar.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
@@ -21,11 +23,22 @@ public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.viewh
     ArrayList<Category> items;
     Context context;
     private int selectedPosition = RecyclerView.NO_POSITION;
+    private CategoryClickListener categoryClickListener;
+
+
+    public interface CategoryClickListener {
+        void onCategoryClicked(int categoryId);
+    }
 
 
     public CategoryAdapter(ArrayList<Category> items) {
         this.items = items;
+
     }
+    public void setCategoryClickListener(CategoryClickListener listener) {
+        this.categoryClickListener = listener;
+    }
+
 
     @NonNull
     @Override
@@ -48,17 +61,22 @@ public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.viewh
             holder.titleTxt.setPaintFlags(holder.titleTxt.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
         }
 
-        // Dodajte slušača klikova na stavku kako biste pratili odabir
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Postavite novu poziciju odabira i obavijestite adapter o promjeni
                 int previousSelectedPosition = selectedPosition;
-                selectedPosition = holder.getAdapterPosition();
-                notifyItemChanged(previousSelectedPosition);
-                notifyItemChanged(selectedPosition);
+                if (previousSelectedPosition == holder.getAdapterPosition()) {
+                    selectedPosition = RecyclerView.NO_POSITION;
+                } else {
+                    selectedPosition = holder.getAdapterPosition();
+                }
+                notifyDataSetChanged();
+                if (categoryClickListener != null) {
+                    categoryClickListener.onCategoryClicked(items.get(position).getId());
+                }
             }
         });
+
     }
 
     @Override

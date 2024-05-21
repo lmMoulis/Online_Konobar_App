@@ -3,6 +3,8 @@ package com.example.onlinekonobar.Activity.Waiter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinekonobar.Adapter.ArticleUserAdapter;
 import com.example.onlinekonobar.Adapter.ArticleWaiterAdapter;
 import com.example.onlinekonobar.Adapter.CategoryAdapter;
+import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Category;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.UserService;
@@ -28,16 +31,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Articles extends AppCompatActivity {
+public class Articles extends AppCompatActivity implements CategoryAdapter.CategoryClickListener {
     private RecyclerView.Adapter adapterListWaiterDrink;
     private RecyclerView.Adapter adapterListCategory;
-    private int categoryId;
-    private String categoryName;
+    private int catId;
     private String searchText;
     private Boolean isSearch;
     ProgressBar progressBar;
     RecyclerView article;
     RecyclerView category;
+    ImageView searchBtn;
+    EditText inputSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +51,32 @@ public class Articles extends AppCompatActivity {
         progressBar=findViewById(R.id.waiterProgressBar);
         article=findViewById(R.id.waiterArticleRecycler);
         category=findViewById(R.id.waiterCategoryRecycler);
+        searchBtn=findViewById(R.id.waiterSearchBtn);
+        inputSearch=findViewById(R.id.waiterSearchInp);
 
         getIntentExtra();
         initCategory();
+        catId=0;
+        initList();
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchText=inputSearch.getText().toString();
+                isSearch =!searchText.isEmpty();
+                initList();
+            }
+        });
+    }
+    @Override
+    public void onCategoryClicked(int categoryId) {
+        // Ovdje primite CategoryId i izvršite željene radnje
+        Log.d("Category", "Kategorija ID: " + categoryId);
+        if(categoryId==catId) {
+            catId=0;
+        }
+        else {
+            catId=categoryId;}
         initList();
     }
     public void initCategory()
@@ -66,12 +93,14 @@ public class Articles extends AppCompatActivity {
                     if (list != null && !list.isEmpty()) {
                         for (com.example.onlinekonobar.Api.Category category : list) {
                             Log.d("Category", "Title: " + category.getNaziv());
-
                         }
 
                         category.setLayoutManager(new LinearLayoutManager(com.example.onlinekonobar.Activity.Waiter.Articles.this, LinearLayoutManager.HORIZONTAL,false));
-
                         adapterListCategory = new CategoryAdapter(list);
+                        category.setAdapter(adapterListCategory);
+
+                        CategoryAdapter adapterListCategory = new CategoryAdapter(list);
+                        adapterListCategory.setCategoryClickListener(Articles.this);
                         category.setAdapter(adapterListCategory);
                     }
                 } else {
@@ -92,12 +121,7 @@ public class Articles extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         UserService service = Client.getService();
         Call<ArrayList<com.example.onlinekonobar.Api.Article>> call;
-
-        if (isSearch) {
-            call = service.searchArticles(searchText);
-        } else {
-            call = service.getAllArticles();
-        }
+        call = service.getAllArticles();
 
         call.enqueue(new Callback<ArrayList<com.example.onlinekonobar.Api.Article>>() {
             @Override
@@ -105,8 +129,10 @@ public class Articles extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     ArrayList<com.example.onlinekonobar.Api.Article> list = response.body();
                     if (list != null && !list.isEmpty()) {
-                        // Ispisivanje podataka u konzolu
-                        for (com.example.onlinekonobar.Api.Article article : list) {
+                        if(isSearch){
+                            list=filterArticles(list);
+                        } else if (catId !=0) {
+                            list=filterArticlesByCategory(list,catId);
                         }
 
                         article.setLayoutManager(new GridLayoutManager(com.example.onlinekonobar.Activity.Waiter.Articles.this, 3));
@@ -126,10 +152,28 @@ public class Articles extends AppCompatActivity {
             }
         });
     }
+    private ArrayList<Article> filterArticles(ArrayList<Article> articles) {
+        ArrayList<Article> filteredList = new ArrayList<>();
+        for (Article article : articles) {
+            if (article.getNaziv().toLowerCase().contains(searchText.toLowerCase())) {
+                filteredList.add(article);
+            }
+        }
+        return filteredList;
+    }
+    private ArrayList<Article>filterArticlesByCategory(ArrayList<Article>articles,int categoryId) {
+        ArrayList<Article> filteredList = new ArrayList<>();
+        for (Article article : articles) {
+            if (article.getKategorija_Id() == categoryId) {
+                filteredList.add(article);
+            }
+        }
+        return filteredList;
+    }
+
     private void getIntentExtra()
     {
-        categoryId=getIntent().getIntExtra("CategoryId",1);
-        categoryName=getIntent().getStringExtra("Category");
+        catId=getIntent().getIntExtra("CategoryId",1);
         searchText=getIntent().getStringExtra("text");
         isSearch=getIntent().getBooleanExtra("isSearch",false);
     }

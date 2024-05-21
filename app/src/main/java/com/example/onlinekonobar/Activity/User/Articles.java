@@ -1,12 +1,21 @@
 package com.example.onlinekonobar.Activity.User;
+
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,8 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinekonobar.Adapter.ArticleUserAdapter;
 import com.example.onlinekonobar.Adapter.CategoryAdapter;
 import com.example.onlinekonobar.Api.Article;
+import com.example.onlinekonobar.Api.Category;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.UserService;
+import com.example.onlinekonobar.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -24,12 +35,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Articles extends AppCompatActivity {
+public class Articles extends AppCompatActivity implements CategoryAdapter.CategoryClickListener {
 
     private RecyclerView.Adapter adapterListDrink;
     private RecyclerView.Adapter adapterListCategory;
-    private int categoryId;
-    private String categoryName;
+
+
+    private int catId;
     private String searchText;
     private boolean isSearch;
 
@@ -38,6 +50,8 @@ public class Articles extends AppCompatActivity {
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
+    Dialog dialog;
+    Button card;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +62,15 @@ public class Articles extends AppCompatActivity {
         category=findViewById(R.id.userCategoryRecycler);
         searchBtn=findViewById(R.id.userSearchBtn);
         inputSearch=findViewById(R.id.userSearchInp);
+        card=findViewById(R.id.getCardBtn);
+
+
+
+
         getIntentExtra();
         initCategory();
+
+        catId=0;
         initList();
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,16 +78,40 @@ public class Articles extends AppCompatActivity {
                 searchText = inputSearch.getText().toString();
                 isSearch = !searchText.isEmpty();
                 initList();
+
+            }
+        });
+        card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment cardFragment = new Card();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragmentCard, cardFragment);
+                fragmentTransaction.addToBackStack(null); // Optional: adds this transaction to the back stack
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentCard);
+                frameLayout.setVisibility(View.VISIBLE);
+
             }
         });
     }
-
+    @Override
+    public void onCategoryClicked(int categoryId) {
+        // Ovdje primite CategoryId i izvršite željene radnje
+        Log.d("Category", "Kategorija ID: " + categoryId);
+        if(categoryId==catId) {
+            catId=0;
+        }
+        else {
+            catId=categoryId;}
+        initList();
+    }
     public void initCategory()
     {
         UserService service = Client.getService();
         Call<ArrayList<com.example.onlinekonobar.Api.Category>> call;
         call = service.getAllCategory();
-
         call.enqueue(new Callback<ArrayList<com.example.onlinekonobar.Api.Category>>() {
             @Override
             public void onResponse(Call<ArrayList<com.example.onlinekonobar.Api.Category>> call, Response<ArrayList<com.example.onlinekonobar.Api.Category>> response) {
@@ -75,42 +120,31 @@ public class Articles extends AppCompatActivity {
                     if (list != null && !list.isEmpty()) {
                         for (com.example.onlinekonobar.Api.Category category : list) {
                             Log.d("Category", "Title: " + category.getNaziv());
-
                         }
-
                         category.setLayoutManager(new LinearLayoutManager(Articles.this, LinearLayoutManager.HORIZONTAL,false));
-
-
                         adapterListCategory = new CategoryAdapter(list);
+                        category.setAdapter(adapterListCategory);
+
+                        //Dohvačanje ID a od odabrane kategorije
+                        CategoryAdapter adapterListCategory = new CategoryAdapter(list);
+                        adapterListCategory.setCategoryClickListener(Articles.this);
                         category.setAdapter(adapterListCategory);
                     }
                 } else {
                     // Handle unsuccessful response
                 }
-                // progressBar.setVisibility(View.GONE);
             }
-
             @Override
             public void onFailure(Call<ArrayList<com.example.onlinekonobar.Api.Category>> call, Throwable t) {
-                // Handle failure
-//                progressBar.setVisibility(View.GONE);
             }
         });
     }
-
-
     private void initList() {
         progressBar.setVisibility(View.VISIBLE);
 
         UserService service = Client.getService();
         Call<ArrayList<Article>> call;
-
-        if (isSearch) {
-            call = service.searchArticles(searchText);
-        } else {
-            call = service.getAllArticles();
-        }
-
+        call = service.getAllArticles();
         call.enqueue(new Callback<ArrayList<Article>>() {
             @Override
             public void onResponse(Call<ArrayList<Article>> call, Response<ArrayList<Article>> response) {
@@ -120,10 +154,11 @@ public class Articles extends AppCompatActivity {
                         // Filtriranje liste ako je pretraga aktivna
                         if (isSearch) {
                             list = filterArticles(list);
+                        } else if (catId !=0) {
+                            list=filterArticlesByCategory(list,catId);
                         }
-
                         article.setLayoutManager(new GridLayoutManager(Articles.this, 2));
-                        adapterListDrink = new ArticleUserAdapter(list);
+                        adapterListDrink = new ArticleUserAdapter(list,Articles.this);
                         article.setAdapter(adapterListDrink);
                     }
                 } else {
@@ -139,8 +174,6 @@ public class Articles extends AppCompatActivity {
             }
         });
     }
-
-    // Metoda za filtriranje liste članaka na temelju unesenog teksta
     private ArrayList<Article> filterArticles(ArrayList<Article> articles) {
         ArrayList<Article> filteredList = new ArrayList<>();
         for (Article article : articles) {
@@ -150,10 +183,17 @@ public class Articles extends AppCompatActivity {
         }
         return filteredList;
     }
-
+    private ArrayList<Article>filterArticlesByCategory(ArrayList<Article>articles,int categoryId) {
+        ArrayList<Article> filteredList = new ArrayList<>();
+        for (Article article : articles) {
+            if (article.getKategorija_Id() == categoryId) {
+                filteredList.add(article);
+            }
+        }
+        return filteredList;
+    }
     private void getIntentExtra() {
-        categoryId=getIntent().getIntExtra("CategoryId",1);
-        categoryName=getIntent().getStringExtra("Category");
+        catId=getIntent().getIntExtra("CategoryId",0);
         searchText=getIntent().getStringExtra("text");
         isSearch=getIntent().getBooleanExtra("isSearch",false);
 

@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="defaultTextColor">#FFFFFF</color>
     <color name="selectedTextColor">#FF9F0F</color>
+    <color name="radioButtonColor">#FF9F0F</color>
 </resources>
