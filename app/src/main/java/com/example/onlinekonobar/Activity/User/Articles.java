@@ -50,7 +50,6 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Dialog dialog;
     Button card;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +62,6 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
         searchBtn=findViewById(R.id.userSearchBtn);
         inputSearch=findViewById(R.id.userSearchInp);
         card=findViewById(R.id.getCardBtn);
-
-
-
 
         getIntentExtra();
         initCategory();

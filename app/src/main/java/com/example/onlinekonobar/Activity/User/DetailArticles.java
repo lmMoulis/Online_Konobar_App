@@ -74,7 +74,7 @@ public class DetailArticles extends Fragment {
             public void onClick(View v) {
                 number=number+1;
                 numberItem.setText(number+"");
-                totalPrice.setText(number+object.getCijena()+"€");
+                totalPrice.setText(String.format("%.2f",number+object.getCijena())+"€");
             }
         });
         minus.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +84,7 @@ public class DetailArticles extends Fragment {
                 {
                     number=number-1;
                     numberItem.setText(number+"");
-                    totalPrice.setText(number+object.getCijena()+"€");
+                    totalPrice.setText(String.format("%.2f",number+object.getCijena())+"€");
                 }
                 else {
                     Toast.makeText(getActivity(), "Količina ne može biti manja od 1", Toast.LENGTH_SHORT).show();
@@ -156,10 +156,10 @@ public class DetailArticles extends Fragment {
     public void setVariable() {
         if (object != null) {
             title.setText(object.getNaziv());
-            price.setText(object.getCijena() + "€");
+            price.setText(String.format("%.2f",object.getCijena()) + "€");
             volumen.setText(object.getKolicina() +" ml");
             numberItem.setText(number+"");
-            totalPrice.setText(object.getCijena() + "€");
+            totalPrice.setText(String.format("%.2f",object.getCijena() )+ "€");
 
             Glide.with(this)
                     .load(object.getSlika())

@@ -74,7 +74,7 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
     public void onBindViewHolder(@NonNull ArticleUserAdapter.viewholder holder, int position) {
         Article article = items.get(position);
         holder.title.setText(items.get(position).getNaziv());
-        holder.price.setText(items.get(position).getCijena()+"€");
+        holder.price.setText(String.format("%.2f",items.get(position).getCijena())+"€");
         Glide.with(context)
                 .load(items.get(position).getSlika())
                 .transform(new FitCenter(),new RoundedCorners(20))

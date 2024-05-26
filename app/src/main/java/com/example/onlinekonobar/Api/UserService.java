@@ -7,6 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface UserService {
@@ -16,6 +17,8 @@ public interface UserService {
     Call<RegisterResponse> registerUsers(@Body RegisterRequest registerRequest);
     @GET("api/ArtikalControllers")
     Call<ArrayList<Article>> getAllArticles();
+    @GET("api/ArtikalControllers/{id}")
+    Call<Article> getArticleById(@Path("id") int articleId);
 
     @GET("api/ArtikalControllers")
     Call<ArrayList<Article>> searchArticles(@Query("searchText") String searchText);
