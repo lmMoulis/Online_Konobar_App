@@ -179,7 +179,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView10" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/button"
+                    android:id="@+id/payBtn"
                     android:layout_width="150dp"
                     android:layout_height="35dp"
                     android:layout_marginBottom="15dp"

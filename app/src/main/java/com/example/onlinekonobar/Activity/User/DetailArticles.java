@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +26,9 @@ import com.example.onlinekonobar.Adapter.CustomizeAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
+import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.UserService;
+import com.example.onlinekonobar.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -35,12 +40,15 @@ import retrofit2.Response;
 
 public class DetailArticles extends Fragment {
     private Article object;
+    private UserService userService;
     Context context;
     ImageView image, minus, plus;
     TextView title, price, volumen, description, totalPrice, numberItem, buyNow, addToCart;
     int number=1;
     int ArticleCatId;
-    RecyclerView.Adapter adapterCustomize;
+//    RecyclerView.Adapter adapterCustomize;
+    CustomizeAdapter adapterCustomize;
+    ManagementCart managementCart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,30 +69,31 @@ public class DetailArticles extends Fragment {
         minus=view.findViewById(R.id.minusBtn);
         plus=view.findViewById(R.id.plusBtn);
 
-        // Retrieve the Article object passed as an argument
+
         if (getArguments() != null) {
             object = (Article) getArguments().getSerializable("selected_article");
             setVariable();
             ArticleCatId=object.getKategorija_Id();
             context=getContext();
         }
+        managementCart=new ManagementCart(context);
+        userService=Client.getService();
 
         plus.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                number=number+1;
-                numberItem.setText(number+"");
-                totalPrice.setText(String.format("%.2f",number+object.getCijena())+"€");
+                checkStockAndUpdateQuantity(object.getId(), true);
             }
         });
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(number !=1)
                 {
-                    number=number-1;
-                    numberItem.setText(number+"");
-                    totalPrice.setText(String.format("%.2f",number+object.getCijena())+"€");
+                    checkStockAndUpdateQuantity(object.getId(), false);
+
                 }
                 else {
                     Toast.makeText(getActivity(), "Količina ne može biti manja od 1", Toast.LENGTH_SHORT).show();
@@ -97,11 +106,31 @@ public class DetailArticles extends Fragment {
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dialog_customize);
                 RecyclerView customRecyclerView = dialog.findViewById(R.id.customeRecyclerView);
+                Button confirmBtn = dialog.findViewById(R.id.saveBtn);
 
-                if(customRecyclerView !=null){
-                    customRecyclerView.setLayoutManager(new GridLayoutManager(context,1));
-                    initDialogList(customRecyclerView,ArticleCatId);
+                if (customRecyclerView != null) {
+                    customRecyclerView.setLayoutManager(new GridLayoutManager(context, 1));
+                    initDialogList(customRecyclerView, object.getKategorija_Id());
+
+                    // Postavljanje onClickListenera za gumb za potvrdu unutar dijaloga
+                    confirmBtn.setOnClickListener(confirmView -> {
+                        if (adapterCustomize != null) {
+                            Customize selectedCustomize = adapterCustomize.getSelectedCustomize();
+                            if (selectedCustomize != null) {
+                                int userId = 1;
+                                int documentId = 1;
+                                managementCart.insertArticle(object, selectedCustomize, number, userId, documentId);
+
+                            }
+                            Log.e("ArticleUserAdapter", "Artikal dodan");
+                        } else {
+                            Log.e("ArticleUserAdapter", "AdapterCustomize is null");
+                        }
+                        dialog.dismiss();
+                    });
                     dialog.show();
+                } else {
+                    Log.e("ArticleUserAdapter", "Failed to initialize customRecyclerView");
                 }
             }
         });
@@ -112,11 +141,40 @@ public class DetailArticles extends Fragment {
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dialog_customize);
                 RecyclerView customRecyclerView = dialog.findViewById(R.id.customeRecyclerView);
+                Button confirmBtn = dialog.findViewById(R.id.saveBtn);
+                if (customRecyclerView != null) {
+                    customRecyclerView.setLayoutManager(new GridLayoutManager(context, 1));
+                    initDialogList(customRecyclerView, object.getKategorija_Id());
 
-                if(customRecyclerView !=null){
-                    customRecyclerView.setLayoutManager(new GridLayoutManager(context,1));
-                    initDialogList(customRecyclerView,ArticleCatId);
+                    // Postavljanje onClickListenera za gumb za potvrdu unutar dijaloga
+                    confirmBtn.setOnClickListener(confirmView -> {
+                        if (adapterCustomize != null) {
+                            Customize selectedCustomize = adapterCustomize.getSelectedCustomize();
+                            if (selectedCustomize != null) {
+                                int userId = 1;
+                                int documentId = 1;
+                                managementCart.insertArticle(object, selectedCustomize, number, userId, documentId);
+
+                            }
+                            Log.e("ArticleUserAdapter", "Artikal dodan");
+
+                        } else {
+                            Log.e("ArticleUserAdapter", "AdapterCustomize is null");
+                        }
+                        dialog.dismiss();
+                        Fragment cartFragment = new Card();
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.fragmentDetailArticlesUser, cartFragment);
+                        fragmentTransaction.commit();
+                        getParentFragmentManager().executePendingTransactions();
+                        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragmentDetailArticlesUser);
+                        View frameLayout = currentFragment.getView().findViewById(R.id.cardfragment);
+                        frameLayout.setVisibility(View.VISIBLE);
+                    });
                     dialog.show();
+                } else {
+                    Log.e("ArticleUserAdapter", "Failed to initialize customRecyclerView");
                 }
             }
         });
@@ -153,6 +211,36 @@ public class DetailArticles extends Fragment {
             }
         });
     }
+    private void checkStockAndUpdateQuantity(int articleId, boolean increment) {
+        userService.getStockByArticleId(articleId).enqueue(new Callback<Stock>() {
+            @Override
+            public void onResponse(Call<Stock> call, Response<Stock> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Stock stock = response.body();
+                    if (increment && number + 1 <= stock.getKolicina()) {
+                        number++;
+                        numberItem.setText(number + "");
+                        totalPrice.setText(String.format("%.2f", number * object.getCijena()) + "€");
+                    } else if (!increment && number > 1) {
+                        number--;
+                        numberItem.setText(number + "");
+                        totalPrice.setText(String.format("%.2f", number * object.getCijena()) + "€");
+                    } else {
+                        Toast.makeText(context, "Nedovoljno artikala na skladištu.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, "Greška prilikom provjere skladišta.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Stock> call, Throwable t) {
+                Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     public void setVariable() {
         if (object != null) {
             title.setText(object.getNaziv());

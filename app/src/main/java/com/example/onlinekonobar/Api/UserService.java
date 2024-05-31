@@ -31,7 +31,8 @@ public interface UserService {
     @GET("api/PrilagodbaControllers")
     Call<ArrayList<Customize>> getAllCustomize();
 
-
+    @GET("/api/SkladisteControllers/{articleId}")
+    Call<Stock> getStockByArticleId(@Path("articleId") int articleId);
 
 }
 

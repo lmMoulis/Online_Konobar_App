@@ -1,20 +1,16 @@
 package com.example.onlinekonobar.Activity.User;
 
-import android.content.Context;
-import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.onlinekonobar.Adapter.ArticleUserAdapter;
 import com.example.onlinekonobar.Adapter.CardAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
@@ -37,36 +33,41 @@ public class Card extends Fragment {
     RecyclerView cardElement;
     ArrayList<Article> cartArticles;
     ArrayList<Customize> cartCustomizes;
-    ArrayList<Item>cartItems;
-    TextView empty,subtotalTxt,vatTxt,totalTxt;
+    TextView empty, subtotalTxt, vatTxt, totalTxt;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_card, container, false);
-
         managementCart = new ManagementCart(getContext());
-        cardElement=view.findViewById(R.id.listCardRecycler);
-        empty=view.findViewById(R.id.emptyCartTxt);
-        subtotalTxt=view.findViewById(R.id.subtotalTxt);
-        vatTxt=view.findViewById(R.id.vatTxt);
-        totalTxt=view.findViewById(R.id.totalTxt);
+        managementCart.setUpdateTotalFeeCallback(new Runnable() {
+            @Override
+            public void run() {
+                updateTotalFee();
+            }
+        });
 
+        cardElement = view.findViewById(R.id.listCardRecycler);
+        empty = view.findViewById(R.id.emptyCartTxt);
+        subtotalTxt = view.findViewById(R.id.subtotalTxt);
+        vatTxt = view.findViewById(R.id.vatTxt);
+        totalTxt = view.findViewById(R.id.totalTxt);
 
+        initList();
+        updateTotalFee();
 
+        return view;
+    }
 
-        managementCart = new ManagementCart(getContext());
-
+    private void updateTotalFee() {
         managementCart.getTotalFee(new ManagementCart.TotalFeeCallback() {
             @Override
             public void onTotalFeeCalculated(double totalFee) {
+                subtotalTxt.setText(String.format("%.2f", totalFee * 0.75));
+                vatTxt.setText(String.format("%.2f", totalFee * 0.25));
                 totalTxt.setText(String.format("%.2f", totalFee));
             }
         });
-        initList();
-
-
-        return view;
     }
 
     private void initList() {
@@ -106,11 +107,10 @@ public class Card extends Fragment {
                                             });
                                             cardElement.setAdapter(adapterCardElement);
                                             checkEmptyState();
-
-
-                                        }
-                                        else {
+                                            updateTotalFee();
+                                        } else {
                                             checkEmptyState();
+                                            updateTotalFee();
                                         }
                                     }
                                 }
@@ -131,6 +131,7 @@ public class Card extends Fragment {
             }
         });
     }
+
     private Article findArticleById(ArrayList<Article> allArticles, int articleId) {
         for (Article article : allArticles) {
             if (article.getId() == articleId) {
@@ -139,15 +140,16 @@ public class Card extends Fragment {
         }
         return null;
     }
-    private Customize getCustomizeById(ArrayList<Customize>allCustomize,int customizeId) {
-        for (Customize customize :allCustomize){
+
+    private Customize getCustomizeById(ArrayList<Customize> allCustomize, int customizeId) {
+        for (Customize customize : allCustomize) {
             if (customize.getId() == customizeId) {
                 return customize;
             }
         }
         return null;
-
     }
+
     private void checkEmptyState() {
         if (adapterCardElement != null && adapterCardElement.getItemCount() != 0) {
             cardElement.setVisibility(View.VISIBLE);
@@ -157,16 +159,4 @@ public class Card extends Fragment {
             cardElement.setVisibility(View.GONE);
         }
     }
-
-    /*private void calculateTotalPrice() {
-        double totalPrice = 0;
-        for (int i = 0; i < cartArticles.size(); i++) {
-            Article article = cartArticles.get(i);
-            Customize customize = cartCustomizes.get(i);
-            int quantity = managementCart.getItemQuantity(article.getId(), customize.getId());
-            totalPrice += article.getCijena() * quantity;
-        }
-        // Ovdje možete prikazati ukupnu cijenu na odgovarajući način, na primjer, postavljanjem u odgovarajući TextView
-        Log.d("CartFragment", "Total price: " + totalPrice + "€");
-    }*/
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +29,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.viewholder> {
     private Context context;
     ManagementCart managementCart;
     private Runnable emptyStateChecker;
-    int numberArticle=1;
+
 
 
     public CardAdapter(ArrayList<Article> items,ArrayList<Customize>itemsCustomize ,Context context,ManagementCart managementCart,Runnable emptyStateChecker) {
@@ -55,7 +56,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.viewholder> {
         holder.title.setText(article.getNaziv());
         holder.custome.setText(customize.getNaziv());
         int quantity = managementCart.getItemQuantity(article.getId(), customize.getId());
-        holder.number.setText(quantity+"");
+        holder.number.setText(String.valueOf(quantity));
         holder.cartPrice.setText(String.format("%.2f",article.getCijena()*quantity)+"€");
 
 
@@ -78,35 +79,39 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.viewholder> {
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    Article article = items.get(position);
-                    managementCart.incrementQuantity(article.getId());
-                    notifyItemChanged(position);
-                }
+                final int currentQuantity = Integer.parseInt(holder.number.getText().toString());
+                managementCart.checkStockAndUpdateQuantity(article.getId(), true, new ManagementCart.StockUpdateCallback() {
+                    @Override
+                    public void onStockUpdate(boolean success) {
+                        if (success) {
+                            holder.number.setText(String.valueOf(currentQuantity + 1));
+                            holder.cartPrice.setText(String.format("%.2f", article.getCijena() * (currentQuantity + 1)) + "€");
+                        } else {
+                            Toast.makeText(context, "Nedovoljno artikala na skladištu.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
         holder.minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position=holder.getAdapterPosition();
-                if(position!=RecyclerView.NO_POSITION)
-                {
-                    Article article = items.get(position);
+                int currentQuantity = Integer.parseInt(holder.number.getText().toString());
+                if (currentQuantity > 1) {
+                    currentQuantity--;
+                    holder.number.setText(String.valueOf(currentQuantity));
                     managementCart.decrementQuantity(article.getId());
-                    notifyItemChanged(position);
+                    holder.cartPrice.setText(String.format("%.2f", article.getCijena() * currentQuantity) + "€");
                 }
             }
         });
-
-
     }
-
     @Override
     public int getItemCount() {return items.size();}
     public class viewholder extends RecyclerView.ViewHolder{
         TextView title,custome,cartPrice,number;
         ImageView img,delete,plus,minus;
+
         public viewholder(@NonNull View itemView)
         {
             super(itemView);
