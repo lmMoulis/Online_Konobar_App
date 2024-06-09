@@ -2,6 +2,7 @@ package com.example.onlinekonobar.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -64,11 +65,6 @@ public class Login extends AppCompatActivity {
 
                 UserService userService = Client.getService();
                 Call<LoginResponse> call = userService.loginUsers(loginRequest);
-//                SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putString("username", username);
-//                editor.putString("email", email);
-//                editor.apply();
 
                 call.enqueue(new Callback<LoginResponse>() {
                     @Override
@@ -77,6 +73,18 @@ public class Login extends AppCompatActivity {
                             LoginResponse loginResponse = response.body();
                             int pristup=loginResponse.getPristup();
                             Log.d("Debug","Pristup"+pristup);
+
+
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            int userId = loginResponse.getId();
+                            editor.putInt("userId", userId);
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.putInt("userAccessLevel", pristup);
+                            editor.apply();
+
+
                             Intent intent;
                             switch (pristup) {
                                 case 1:

@@ -1,8 +1,7 @@
 package com.example.onlinekonobar.Activity.User;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,10 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinekonobar.Adapter.ArticleUserAdapter;
 import com.example.onlinekonobar.Adapter.CategoryAdapter;
 import com.example.onlinekonobar.Api.Article;
-import com.example.onlinekonobar.Api.Category;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.UserService;
-import com.example.onlinekonobar.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -50,7 +46,8 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Button card;
+    Button home,list,card,profile;
+    int idUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +58,14 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
         category=findViewById(R.id.userCategoryRecycler);
         searchBtn=findViewById(R.id.userSearchBtn);
         inputSearch=findViewById(R.id.userSearchInp);
-        card=findViewById(R.id.getCardBtn);
 
+        home=findViewById(R.id.getHomeBtn);
+        list=findViewById(R.id.getListBtn);
+        card=findViewById(R.id.getCardBtn);
+        profile=findViewById(R.id.getProfileBtn);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        idUser=sharedPreferences.getInt("userId",-1);
         getIntentExtra();
         initCategory();
 
@@ -83,12 +86,35 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
                 Fragment cardFragment = new Card();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
                 fragmentTransaction.replace(R.id.fragmentCard, cardFragment);
-                fragmentTransaction.addToBackStack(null); // Optional: adds this transaction to the back stack
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 View frameLayout = findViewById(R.id.fragmentCard);
                 frameLayout.setVisibility(View.VISIBLE);
 
+            }
+        });
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment profileFragment = new Profile();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentProfile, profileFragment);
+                fragmentTransaction.addToBackStack(null); // Optional: adds this transaction to the back stack
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentProfile);
+                frameLayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -154,7 +180,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
                             list=filterArticlesByCategory(list,catId);
                         }
                         article.setLayoutManager(new GridLayoutManager(Articles.this, 2));
-                        adapterListDrink = new ArticleUserAdapter(list,Articles.this);
+                        adapterListDrink = new ArticleUserAdapter(list,Articles.this,idUser);
                         article.setAdapter(adapterListDrink);
                     }
                 } else {

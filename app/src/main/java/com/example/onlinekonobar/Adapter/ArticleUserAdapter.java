@@ -48,6 +48,7 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
 
     ArrayList<Article> items;
     Context context;
+    private int idUser;
     int ArticleCatId;
     Button save;
     ManagementCart managementCart;
@@ -55,10 +56,11 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
     CustomizeAdapter adapterCustomize;
 
 
-    public ArticleUserAdapter(ArrayList<Article> items,Context context) {
+    public ArticleUserAdapter(ArrayList<Article> items,Context context,int idUser) {
         this.items = items;
         this.context = context;
         this.managementCart = new ManagementCart(context);
+        this.idUser=idUser;
     }
 
     @NonNull
@@ -111,7 +113,7 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
                     if (adapterCustomize != null) {
                         Customize selectedCustomize = adapterCustomize.getSelectedCustomize();
                         if (selectedCustomize != null) {
-                            int userId = 1;
+                            int userId = idUser;
                             int documentId = 1;
                             managementCart.insertArticle(article, selectedCustomize, 1, userId, documentId);
                         }

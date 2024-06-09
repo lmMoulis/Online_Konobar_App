@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Stock implements Serializable {
+    @SerializedName("id")
+    public int Id;
     @SerializedName("artikal_id")
     public int Artikal_Id;
     @SerializedName("dokument_id")
@@ -13,6 +15,15 @@ public class Stock implements Serializable {
     public int Korisnik_Id;
     @SerializedName("kolicina")
     public int Kolicina;
+
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     public int getArtikal_Id() {
         return Artikal_Id;

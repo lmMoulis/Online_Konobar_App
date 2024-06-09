@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.onlinekonobar.Adapter.CardAdapter;
@@ -34,7 +36,7 @@ public class Card extends Fragment {
     ArrayList<Article> cartArticles;
     ArrayList<Customize> cartCustomizes;
     TextView empty, subtotalTxt, vatTxt, totalTxt;
-
+    Button pay;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,6 +54,14 @@ public class Card extends Fragment {
         subtotalTxt = view.findViewById(R.id.subtotalTxt);
         vatTxt = view.findViewById(R.id.vatTxt);
         totalTxt = view.findViewById(R.id.totalTxt);
+        pay=view.findViewById(R.id.payBtn);
+        pay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Card","User id"+getUserId(managementCart.getListCart()));
+                managementCart.saveCartToDatabase(getUserId(managementCart.getListCart()));
+            }
+        });
 
         initList();
         updateTotalFee();
@@ -158,5 +168,15 @@ public class Card extends Fragment {
             empty.setVisibility(View.VISIBLE);
             cardElement.setVisibility(View.GONE);
         }
+    }
+
+    private int getUserId(ArrayList<Item> itemArticles)
+    {
+        for(Item item:itemArticles)
+        {
+            int userId=item.getKorisnik_Id();
+            return userId;
+        }
+        return  -1;
     }
 }

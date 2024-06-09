@@ -1,7 +1,12 @@
 package com.example.onlinekonobar.Activity.User;
 
+import static android.content.Intent.getIntent;
+
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.Intent;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -46,7 +51,6 @@ public class DetailArticles extends Fragment {
     TextView title, price, volumen, description, totalPrice, numberItem, buyNow, addToCart;
     int number=1;
     int ArticleCatId;
-//    RecyclerView.Adapter adapterCustomize;
     CustomizeAdapter adapterCustomize;
     ManagementCart managementCart;
 
@@ -68,6 +72,15 @@ public class DetailArticles extends Fragment {
         image = view.findViewById(R.id.img);
         minus=view.findViewById(R.id.minusBtn);
         plus=view.findViewById(R.id.plusBtn);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        int idUser = sharedPreferences.getInt("userId", -1);
+
+        // Dohvat ID prijavljenog korisnika iz Intent-a ako postoji
+        Bundle args = getArguments();
+        if (args != null) {
+            int userIdFromIntent = args.getInt("userId", -1);
+        }
 
 
         if (getArguments() != null) {
@@ -117,7 +130,7 @@ public class DetailArticles extends Fragment {
                         if (adapterCustomize != null) {
                             Customize selectedCustomize = adapterCustomize.getSelectedCustomize();
                             if (selectedCustomize != null) {
-                                int userId = 1;
+                                int userId = idUser;
                                 int documentId = 1;
                                 managementCart.insertArticle(object, selectedCustomize, number, userId, documentId);
 

@@ -1,12 +1,21 @@
 package com.example.onlinekonobar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.example.onlinekonobar.Activity.User.Articles;
+import com.example.onlinekonobar.Activity.User.Card;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
+import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.Api.Item;
 import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.UserService;
@@ -14,7 +23,14 @@ import com.example.onlinekonobar.TinyDB;
 import com.example.onlinekonobar.ManagementCart.StockUpdateCallback;
 
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,8 +88,9 @@ public class ManagementCart {
             newItem.setDokument_Id(documentId);
             newItem.setKolicina(quantity);
             newItem.setDodatak(customize.getId());
+            newItem.setCijena(article.getCijena());
             cartList.add(newItem);
-            Log.d("ManagementCart", "Added new item to cart: " + newItem.getArtikal_Id() + ", " + newItem.getDodatak() + ", " + newItem.getKolicina());
+            Log.d("ManagementCart", "Added new item to cart: " + newItem.getArtikal_Id() + ", " + newItem.getDodatak() + ", " + newItem.getCijena() + ", " + newItem.getKorisnik_Id());
         }
 
         tinyDB.putListObject("CartList", cartList);
@@ -166,6 +183,7 @@ public class ManagementCart {
         Toast.makeText(context, "Košarica je očišćena", Toast.LENGTH_SHORT).show();
         if (updateTotalFeeCallback != null) {
             updateTotalFeeCallback.run();
+
         }
     }
     public void getTotalFee(final TotalFeeCallback callback) {
@@ -195,4 +213,122 @@ public class ManagementCart {
             });
         }
     }
+
+    private String generateOrderId() {
+        String orderId =  UUID.randomUUID().toString();
+        return orderId;
+
+    }
+    public void saveCartToDatabase(int userId) {
+        ArrayList<Item> cartList = getListCart();
+        if (cartList != null && !cartList.isEmpty()) {
+
+            String orderId = generateOrderId();
+
+            Date currentTime = Calendar.getInstance().getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String formattedDate = sdf.format(currentTime);
+            float totalAmount = 0;
+            int dokument_Id=-1;
+
+            for(Item item:cartList){
+                totalAmount+=item.getCijena()*item.getKolicina();
+                dokument_Id=item.getDokument_Id();
+
+            }
+            Invoice invoice= new Invoice();
+            invoice.setDokument_Id(dokument_Id);
+            invoice.setBroj_Racuna(orderId);
+            invoice.setStatus("Aktivno");
+            invoice.setUkupan_Iznos(totalAmount);
+            invoice.setDatum(formattedDate);
+            invoice.setKorisnik_Id(userId);
+
+            userService.saveInvoice(invoice).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(context, "Narudžba je kreirana", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Greška prilikom kreiranja narudžbe.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable throwable) {
+                    Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            for (Item item : cartList) {
+                item.setKorisnik_Id(userId);
+                item.setOrder_Id(orderId);
+                totalAmount += item.getCijena() * item.getKolicina();
+
+                Log.d("ManagementCart", "Spremam u bazu: " +
+                        "Artikal ID: " + item.getArtikal_Id() +
+                        ", Korisnik ID: " + item.getKorisnik_Id() +
+                        ", Dokument ID: " + item.getDokument_Id() +
+                        ", Količina: " + item.getKolicina() +
+                        ", Dodatak ID: " + item.getDodatak()+
+                        ". Cijena:"+ item.getCijena());
+
+                userService.saveCard(item).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+//                            Toast.makeText(context, "Podaci iz košarice su spremljeni.", Toast.LENGTH_SHORT).show();
+                            clearCart();
+
+                        } else {
+//                            Toast.makeText(context, "Greška prilikom spremanja podataka.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Prvo dohvatite trenutno stanje skladišta za dati artikal_id
+                userService.getStockByArticleId(item.getArtikal_Id()).enqueue(new Callback<Stock>() {
+                    @Override
+                    public void onResponse(Call<Stock> call, Response<Stock> response) {
+                        if (response.isSuccessful()) {
+                            Stock existingStock = response.body();
+                            if (existingStock != null) {
+                                existingStock.setId(existingStock.getId());
+                                existingStock.setArtikal_Id(item.getArtikal_Id());
+                                existingStock.setKolicina(existingStock.getKolicina() - item.getKolicina());
+                                userService.updateStock(existingStock.getId(), existingStock).enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                            }
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Stock> call, Throwable t) {
+                        Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        } else {
+            Toast.makeText(context, "Košarica je prazna.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }

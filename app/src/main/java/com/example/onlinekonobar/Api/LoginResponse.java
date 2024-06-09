@@ -1,16 +1,16 @@
 package com.example.onlinekonobar.Api;
 
 public class LoginResponse {
-    private  String id;
+    private  int id;
     private String email;
     private String lozinka;
     private int pristup;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
