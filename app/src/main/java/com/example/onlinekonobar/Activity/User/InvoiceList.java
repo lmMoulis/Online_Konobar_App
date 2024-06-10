@@ -1,5 +1,9 @@
 package com.example.onlinekonobar.Activity.User;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -26,6 +30,7 @@ import retrofit2.Response;
 public class InvoiceList extends Fragment {
     private RecyclerView.Adapter adapterOrder;
     private RecyclerView invoice;
+    int idUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,19 +43,33 @@ public class InvoiceList extends Fragment {
     }
 
     public void initList() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        idUser = sharedPreferences.getInt("userId", -1);
+        Log.d("initList: ","Id user"+idUser);
+
         UserService service = Client.getService();
         Call<ArrayList<Invoice>> call = service.getAllInvoice();
         call.enqueue(new Callback<ArrayList<Invoice>>() {
             @Override
             public void onResponse(Call<ArrayList<Invoice>> call, Response<ArrayList<Invoice>> response) {
-                ArrayList<Invoice> invoiceList = response.body();
-                if (invoiceList != null && !invoiceList.isEmpty()) {
+                if (response.isSuccessful()) {
+                    ArrayList<Invoice> invoiceList = response.body();
+                    if (invoiceList != null && !invoiceList.isEmpty()) {
+                        // Filtriraj račune prema idUser
+                        ArrayList<Invoice> filteredInvoiceList = new ArrayList<>();
+                        for (Invoice invoice : invoiceList) {
+                            if (invoice.getKorisnik_Id() == idUser) { // Pretpostavljamo da Invoice ima metodu getUserId()
+                                filteredInvoiceList.add(invoice);
+                            }
+                        }
 
-                    invoice.setLayoutManager(new GridLayoutManager(getContext(), 1));
-                    adapterOrder = new InvoiceUserAdapter(invoiceList, getContext());
-                    invoice.setAdapter(adapterOrder);
-                } else {
-                    Log.d("InvoiceList", "Invoice list is empty or null");
+                        // Postavi filtriranu listu u adapter
+                        invoice.setLayoutManager(new GridLayoutManager(getContext(), 1));
+                        adapterOrder = new InvoiceUserAdapter(filteredInvoiceList, getContext());
+                        invoice.setAdapter(adapterOrder);
+                    } else {
+                        Log.d("InvoiceList", "Invoice list is empty or null");
+                    }
                 }
             }
 
