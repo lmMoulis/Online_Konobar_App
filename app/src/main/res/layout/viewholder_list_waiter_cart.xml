@@ -30,7 +30,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/invoiceImg"
+                android:id="@+id/cartWaiterImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
@@ -44,7 +44,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/invoiceTitleTxt"
+                android:id="@+id/cartTitleWaiterTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -55,18 +55,39 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/customeInvoiceTxt"
+                android:id="@+id/customeCartWaiterTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="Custome"
                 android:textColor="#A19A9A"
                 android:textSize="11dp"
-                app:layout_constraintStart_toStartOf="@+id/invoiceTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/invoiceTitleTxt" />
+                app:layout_constraintStart_toStartOf="@+id/cartTitleWaiterTxt"
+                app:layout_constraintTop_toBottomOf="@+id/cartTitleWaiterTxt" />
+
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/light_gray_rounded_trash"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/cartDeleteWaiterBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/trash" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/invoicePriceTxt"
+                android:id="@+id/cartPriceWaiterTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -77,33 +98,54 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <LinearLayout
-                android:layout_width="30dp"
+                android:layout_width="50dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="10dp"
                 android:background="@drawable/orange_button"
-
                 android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/invoicePriceTxt">
+                app:layout_constraintStart_toStartOf="@+id/customeCartWaiterTxt"
+                app:layout_constraintTop_toTopOf="@+id/cartPriceWaiterTxt">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/quantityInvoiceTxt"
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/minusWaiterBtn"
+                        android:layout_width="15dp"
                         android:layout_height="wrap_content"
-                        android:text="1"
+                        android:layout_marginStart="2dp"
+                        android:src="@drawable/minus"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/numberWaiterTxt"
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="2dp"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/minusWaiterBtn"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/plusWaiterBtn"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="2dp"
+                        android:src="@drawable/plus"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.cardview.widget.CardView>

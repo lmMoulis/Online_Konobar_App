@@ -15,23 +15,23 @@ import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
 
-public class CustomizeAdapter extends RecyclerView.Adapter<CustomizeAdapter.viewholder> {
+public class CustomizeWaiterAdapter extends RecyclerView.Adapter<CustomizeWaiterAdapter.viewholder> {
     Context context;
-    ArrayList<Customize>items;
+    ArrayList<Customize> items;
     private int selectedPosition = -1;
-    public CustomizeAdapter(ArrayList<Customize>items){
+    public CustomizeWaiterAdapter(ArrayList<Customize>items){
         this.items=items;
     }
     @NonNull
     @Override
-    public CustomizeAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-       context= parent.getContext();
-       View inflat= LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_list_custom_drink,parent,false);
-        return new viewholder(inflat);
+    public CustomizeWaiterAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        context= parent.getContext();
+        View inflat= LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_list_custom_drink,parent,false);
+        return new CustomizeWaiterAdapter.viewholder(inflat);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CustomizeAdapter.viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomizeWaiterAdapter.viewholder holder, int position) {
         holder.titleCustomize.setText(items.get(position).getNaziv());
 
         holder.titleCustomize.setChecked(position == selectedPosition);
@@ -40,7 +40,6 @@ public class CustomizeAdapter extends RecyclerView.Adapter<CustomizeAdapter.view
             notifyDataSetChanged();
         });
     }
-
     public Customize getSelectedCustomize() {
         if (selectedPosition != -1) {
             return items.get(selectedPosition);

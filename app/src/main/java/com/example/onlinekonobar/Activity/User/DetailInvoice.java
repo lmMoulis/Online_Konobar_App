@@ -1,6 +1,7 @@
 package com.example.onlinekonobar.Activity.User;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.arch.core.internal.SafeIterableMap;
@@ -67,6 +68,27 @@ public class DetailInvoice extends Fragment {
             Log.d("Detail Inovice","Inovice id "+invoiceId);
             context=getContext();
         }
+        UserService userService = Client.getService();
+        Call<Invoice> callInvoice = userService.getInvoiceById(invoiceId);
+        callInvoice.enqueue(new Callback<Invoice>() {
+            @Override
+            public void onResponse(Call<Invoice> call, Response<Invoice> response) {
+                Invoice invoice= response.body();
+                if (invoice != null) {
+                    Log.d("Test","Get status"+invoice.getStatus());
+                    if(invoice.getStatus().equals("Stornirano"))
+                    {
+                        storn.setEnabled(false);
+                        storn.setAlpha(0.5f);
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<Invoice> call, Throwable throwable) {
+
+            }
+        });
         storn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,8 +243,13 @@ public class DetailInvoice extends Fragment {
     private void setVariable()
     {
         if(invoiceObject !=null) {
-            orderNumber.setText(
-                    String.valueOf(invoiceObject.getBroj_Racuna()));
+            String brojRacuna = invoiceObject.getBroj_Racuna();
+            int lastDashIndex = brojRacuna.lastIndexOf('-');
+            if (lastDashIndex != -1) {
+                String brojRacunaNovi = brojRacuna.substring(lastDashIndex + 1);
+                orderNumber.setText(brojRacunaNovi);
+            }
+
             date.setText(String.valueOf(convertDateFormat(invoiceObject.getDatum())));
             status.setText(String.valueOf(invoiceObject.getStatus()));
             total.setText(String.format("%.2f", invoiceObject.getUkupan_Iznos())+"€");

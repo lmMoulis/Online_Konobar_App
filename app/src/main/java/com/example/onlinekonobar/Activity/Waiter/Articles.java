@@ -1,8 +1,11 @@
 package com.example.onlinekonobar.Activity.Waiter;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -12,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +48,8 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
+    Button cart;
+    int idUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +61,11 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
         category=findViewById(R.id.waiterCategoryRecycler);
         searchBtn=findViewById(R.id.waiterSearchBtn);
         inputSearch=findViewById(R.id.waiterSearchInp);
-
+        cart=findViewById(R.id.cartWaiterBtn);
+        getIntentExtra();
+        initCategory();
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        idUser=sharedPreferences.getInt("userId",-1);
         getIntentExtra();
         initCategory();
         catId=0;
@@ -65,6 +77,25 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
                 searchText=inputSearch.getText().toString();
                 isSearch =!searchText.isEmpty();
                 initList();
+            }
+        });
+        cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment cardFragment = new Card();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentCartWaiter, cardFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentCartWaiter);
+                frameLayout.setVisibility(View.VISIBLE);
+
             }
         });
     }
@@ -136,7 +167,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
                         }
 
                         article.setLayoutManager(new GridLayoutManager(com.example.onlinekonobar.Activity.Waiter.Articles.this, 3));
-                        adapterListWaiterDrink = new ArticleWaiterAdapter(list);
+                        adapterListWaiterDrink = new ArticleWaiterAdapter(list,Articles.this,idUser);
                         article.setAdapter(adapterListWaiterDrink);
                     }
                 } else {

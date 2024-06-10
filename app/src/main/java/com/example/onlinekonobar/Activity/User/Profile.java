@@ -1,6 +1,7 @@
 package com.example.onlinekonobar.Activity.User;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.onlinekonobar.Activity.Login;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.Api.User;
@@ -34,7 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Profile extends Fragment {
-    TextView name,countOrder,email,date,gender,password;
+    TextView name,countOrder,email,date,gender,password,logout;
     ImageView order;
     int orderNum;
     ProgressBar progressBar;
@@ -51,6 +53,24 @@ public class Profile extends Fragment {
         password=view.findViewById(R.id.passwordProfileTxt);
         order=view.findViewById(R.id.getOrders);
         progressBar=view.findViewById(R.id.progressBarProfile);
+        logout=view.findViewById(R.id.logoutUserBtn);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Clear SharedPreferences
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+
+                // Redirect to Login activity
+                Intent intent = new Intent(getActivity(), Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear activity stack
+                startActivity(intent);
+                getActivity().finish(); // Close current activity
+
+            }
+        });
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +92,7 @@ public class Profile extends Fragment {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         int idUser = sharedPreferences.getInt("userId", -1);
+        Log.d("fafsf","Id" +idUser);
         userService.getUserById(idUser).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

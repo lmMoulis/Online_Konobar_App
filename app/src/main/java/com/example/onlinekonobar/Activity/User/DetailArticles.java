@@ -1,16 +1,12 @@
 package com.example.onlinekonobar.Activity.User;
 
-import static android.content.Intent.getIntent;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.Intent;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -26,8 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.onlinekonobar.Activity.Register;
-import com.example.onlinekonobar.Adapter.CustomizeAdapter;
+import com.example.onlinekonobar.Adapter.CustomizeUserAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
@@ -51,7 +46,7 @@ public class DetailArticles extends Fragment {
     TextView title, price, volumen, description, totalPrice, numberItem, buyNow, addToCart;
     int number=1;
     int ArticleCatId;
-    CustomizeAdapter adapterCustomize;
+    CustomizeUserAdapter adapterCustomize;
     ManagementCart managementCart;
 
     @Override
@@ -210,7 +205,7 @@ public class DetailArticles extends Fragment {
                         }
                     }
                     Log.d("Category", "If : ");
-                    adapterCustomize = new CustomizeAdapter(filteredList);
+                    adapterCustomize = new CustomizeUserAdapter(filteredList);
                     recyclerView.setAdapter(adapterCustomize);
 
                 } else {

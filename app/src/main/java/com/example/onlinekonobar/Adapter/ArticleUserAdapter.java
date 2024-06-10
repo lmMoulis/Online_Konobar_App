@@ -2,7 +2,6 @@ package com.example.onlinekonobar.Adapter;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,23 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.example.onlinekonobar.Activity.User.Articles;
 import com.example.onlinekonobar.Activity.User.DetailArticles;
 import com.example.onlinekonobar.Api.Article;
-import com.example.onlinekonobar.Api.Category;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
 import com.example.onlinekonobar.Api.UserService;
@@ -37,7 +28,6 @@ import com.example.onlinekonobar.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -53,7 +43,7 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
     Button save;
     ManagementCart managementCart;
 
-    CustomizeAdapter adapterCustomize;
+    CustomizeUserAdapter adapterCustomize;
 
 
     public ArticleUserAdapter(ArrayList<Article> items,Context context,int idUser) {
@@ -144,7 +134,7 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
                             }
                         }
                         Log.d("Category", "If : ");
-                        adapterCustomize = new CustomizeAdapter(filteredList);
+                        adapterCustomize = new CustomizeUserAdapter(filteredList);
                         recyclerView.setAdapter(adapterCustomize);
 
                 } else {

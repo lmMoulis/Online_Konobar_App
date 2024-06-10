@@ -1,4 +1,4 @@
-package com.example.onlinekonobar.Activity.User;
+package com.example.onlinekonobar.Activity.Waiter;
 
 import android.os.Bundle;
 
@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.onlinekonobar.Adapter.CartUserAdapter;
+import com.example.onlinekonobar.Adapter.CartWaiterAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
@@ -29,7 +30,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Card extends Fragment {
-
     private RecyclerView.Adapter adapterCardElement;
     private ManagementCart managementCart;
     RecyclerView cardElement;
@@ -40,21 +40,21 @@ public class Card extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_card, container, false);
+        View view = inflater.inflate(R.layout.fragment_card_waiter, container, false);
         managementCart = new ManagementCart(getContext());
+
         managementCart.setUpdateTotalFeeCallback(new Runnable() {
             @Override
             public void run() {
                 updateTotalFee();
             }
         });
-
-        cardElement = view.findViewById(R.id.listCardRecycler);
-        empty = view.findViewById(R.id.emptyCartTxt);
-        subtotalTxt = view.findViewById(R.id.subtotalTxt);
-        vatTxt = view.findViewById(R.id.vatTxt);
-        totalTxt = view.findViewById(R.id.totalTxt);
-        pay=view.findViewById(R.id.payBtn);
+        cardElement = view.findViewById(R.id.listCardRecyclerWaiter);
+        empty = view.findViewById(R.id.emptyCartWaiterTxt);
+        subtotalTxt = view.findViewById(R.id.subtotalWaiterTxt);
+        vatTxt = view.findViewById(R.id.vatWaiterTxt);
+        totalTxt = view.findViewById(R.id.totalWaiterTxt);
+        pay=view.findViewById(R.id.payWaiterBtn);
         pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +68,6 @@ public class Card extends Fragment {
 
         return view;
     }
-
     private void updateTotalFee() {
         managementCart.getTotalFee(new ManagementCart.TotalFeeCallback() {
             @Override
@@ -79,7 +78,6 @@ public class Card extends Fragment {
             }
         });
     }
-
     private void initList() {
         UserService service = Client.getService();
         Call<ArrayList<Article>> callArticles = service.getAllArticles();
@@ -109,7 +107,7 @@ public class Card extends Fragment {
                                                 }
                                             }
                                             cardElement.setLayoutManager(new GridLayoutManager(getContext(), 1));
-                                            adapterCardElement = new CartUserAdapter(cartArticles, cartCustomizes, getContext(), managementCart, new Runnable() {
+                                            adapterCardElement = new CartWaiterAdapter(cartArticles, cartCustomizes, getContext(), managementCart, new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     checkEmptyState();
@@ -141,7 +139,6 @@ public class Card extends Fragment {
             }
         });
     }
-
     private Article findArticleById(ArrayList<Article> allArticles, int articleId) {
         for (Article article : allArticles) {
             if (article.getId() == articleId) {

@@ -46,7 +46,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Button home,list,card,profile;
+    Button home,list,cart,profile;
     int idUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
 
         home=findViewById(R.id.getHomeBtn);
         list=findViewById(R.id.getListBtn);
-        card=findViewById(R.id.getCardBtn);
+        cart=findViewById(R.id.getCardBtn);
         profile=findViewById(R.id.getProfileBtn);
 
         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -80,7 +80,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
 
             }
         });
-        card.setOnClickListener(new View.OnClickListener() {
+        cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment cardFragment = new Card();
