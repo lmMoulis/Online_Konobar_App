@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.onlinekonobar.Adapter.InvoiceUserAdapter;
+import com.example.onlinekonobar.Activity.User.Adapter.InvoiceUserAdapter;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.Api.UserService;
@@ -45,6 +45,7 @@ public class InvoiceList extends Fragment {
             public void onResponse(Call<ArrayList<Invoice>> call, Response<ArrayList<Invoice>> response) {
                 ArrayList<Invoice> invoiceList = response.body();
                 if (invoiceList != null && !invoiceList.isEmpty()) {
+
                     invoice.setLayoutManager(new GridLayoutManager(getContext(), 1));
                     adapterOrder = new InvoiceUserAdapter(invoiceList, getContext());
                     invoice.setAdapter(adapterOrder);

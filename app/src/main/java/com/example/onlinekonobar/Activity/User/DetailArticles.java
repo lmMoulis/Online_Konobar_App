@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.onlinekonobar.Adapter.CustomizeUserAdapter;
+import com.example.onlinekonobar.Activity.User.Adapter.CustomizeUserAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;

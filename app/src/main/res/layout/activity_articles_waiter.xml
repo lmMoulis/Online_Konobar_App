@@ -11,43 +11,48 @@
     <ScrollView
         android:id="@+id/waiterScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/input_text"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/waiterSearchInp"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/input_text"
-                android:fontFamily="@font/kollektif"
-                android:hint="Trazi"
-                android:paddingLeft="10dp"
-                android:textColor="#706F73"
-                android:textColorHint="#706F73"
-                android:textSize="18dp" />
-            <ImageView
-                android:id="@+id/waiterSearchBtn"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/search_icon" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:id="@+id/waiterSearchInp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/input_text"
+                    android:fontFamily="@font/kollektif"
+                    android:hint="Trazi"
+                    android:paddingLeft="10dp"
+                    android:textColor="#706F73"
+                    android:textColorHint="#706F73"
+                    android:textSize="18dp" />
+
+                <ImageView
+                    android:id="@+id/waiterSearchBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/search_icon" />
+            </LinearLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -92,11 +97,66 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/cartWaiterBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+    <LinearLayout
+        android:id="@+id/linearLayout9"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#26252A"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/waiterScrollView">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/getHomeWaiterBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/getListBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:background="@drawable/home_icon" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/getListWaiterBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="80dp"
+            android:background="@drawable/list"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/getCardBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/getCardWaiterBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="48dp"
+            android:background="@drawable/bag"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/getProfileBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/getProfileWaiterBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="36dp"
+            android:background="@drawable/profile"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fragmentCartWaiter"

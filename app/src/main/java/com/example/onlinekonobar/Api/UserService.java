@@ -44,7 +44,8 @@ public interface UserService {
     Call<Stock> getStockByArticleId(@Path("articleId") int articleId);
     @GET("api/RacunControllers/{invoiceId}")
     Call<Invoice>getInvoiceById(@Path("invoiceId") int invoiceId);
-
+    @GET("api/RacunControllers/{userId}")
+    Call<ArrayList<Invoice>>getInvoiceByUserId(@Path("userId") int userId);
     @GET("api/Korisnik/{id}")
     Call<User> getUserById(@Path("id") int id);
     @GET("api/RacunControllers")

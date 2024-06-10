@@ -10,11 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,8 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlinekonobar.Adapter.ArticleUserAdapter;
-import com.example.onlinekonobar.Adapter.ArticleWaiterAdapter;
+import com.example.onlinekonobar.Activity.Waiter.Adapter.ArticleWaiterAdapter;
 import com.example.onlinekonobar.Adapter.CategoryAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Category;
@@ -61,7 +56,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
         category=findViewById(R.id.waiterCategoryRecycler);
         searchBtn=findViewById(R.id.waiterSearchBtn);
         inputSearch=findViewById(R.id.waiterSearchInp);
-        cart=findViewById(R.id.cartWaiterBtn);
+        cart=findViewById(R.id.getCardWaiterBtn);
         getIntentExtra();
         initCategory();
         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);

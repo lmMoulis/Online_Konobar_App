@@ -40,6 +40,7 @@ public class Profile extends Fragment {
     ImageView order;
     int orderNum;
     ProgressBar progressBar;
+    int idUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,7 +92,7 @@ public class Profile extends Fragment {
         UserService userService= Client.getService();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        int idUser = sharedPreferences.getInt("userId", -1);
+        idUser = sharedPreferences.getInt("userId", -1);
         Log.d("fafsf","Id" +idUser);
         userService.getUserById(idUser).enqueue(new Callback<User>() {
             @Override
@@ -135,7 +136,7 @@ public class Profile extends Fragment {
                 ArrayList<Invoice>list=response.body();
                 if (list != null && !list.isEmpty()) {
                     for (Invoice invoice : list) {
-                       orderNum++;
+                            orderNum++;
                     }
                 }
 

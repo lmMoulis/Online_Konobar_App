@@ -1,10 +1,8 @@
 package com.example.onlinekonobar.Activity.User;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.arch.core.internal.SafeIterableMap;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,18 +15,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.engine.Resource;
-import com.example.onlinekonobar.Adapter.InvoiceDetailAdapter;
+import com.example.onlinekonobar.Activity.User.Adapter.InvoiceDetailAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
 import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.Api.Item;
-import com.example.onlinekonobar.Api.User;
 import com.example.onlinekonobar.Api.UserService;
 import com.example.onlinekonobar.R;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

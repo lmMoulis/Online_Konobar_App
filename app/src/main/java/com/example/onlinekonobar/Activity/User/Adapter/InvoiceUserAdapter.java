@@ -1,4 +1,4 @@
-package com.example.onlinekonobar.Adapter;
+package com.example.onlinekonobar.Activity.User.Adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlinekonobar.Activity.User.DetailArticles;
 import com.example.onlinekonobar.Activity.User.DetailInvoice;
 import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.R;

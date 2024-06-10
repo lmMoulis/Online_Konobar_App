@@ -13,8 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.onlinekonobar.Adapter.CartUserAdapter;
-import com.example.onlinekonobar.Adapter.CartWaiterAdapter;
+import com.example.onlinekonobar.Activity.Waiter.Adapter.CartWaiterAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;

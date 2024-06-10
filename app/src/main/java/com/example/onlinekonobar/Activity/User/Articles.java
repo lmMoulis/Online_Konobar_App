@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlinekonobar.Adapter.ArticleUserAdapter;
+import com.example.onlinekonobar.Activity.User.Adapter.ArticleUserAdapter;
 import com.example.onlinekonobar.Adapter.CategoryAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;

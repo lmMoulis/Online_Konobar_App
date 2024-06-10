@@ -1,4 +1,4 @@
-package com.example.onlinekonobar.Adapter;
+package com.example.onlinekonobar.Activity.Waiter.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

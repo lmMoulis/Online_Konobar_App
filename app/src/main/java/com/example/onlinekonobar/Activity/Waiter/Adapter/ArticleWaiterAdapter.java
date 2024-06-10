@@ -1,25 +1,18 @@
-package com.example.onlinekonobar.Adapter;
+package com.example.onlinekonobar.Activity.Waiter.Adapter;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.example.onlinekonobar.Activity.User.DetailArticles;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
@@ -34,61 +27,35 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.viewholder> {
-
-    ArrayList<Article> items;
+public class ArticleWaiterAdapter extends RecyclerView.Adapter<ArticleWaiterAdapter.viewholder> {
+    ArrayList<Article>items;
     Context context;
     private int idUser;
-    int ArticleCatId;
-    Button save;
     ManagementCart managementCart;
+    CustomizeWaiterAdapter adapterCustomize;
 
-    CustomizeUserAdapter adapterCustomize;
-
-
-    public ArticleUserAdapter(ArrayList<Article> items,Context context,int idUser) {
-        this.items = items;
+    public ArticleWaiterAdapter(ArrayList<Article> items,Context context,int idUser)
+    {
+        this.items=items;
         this.context = context;
         this.managementCart = new ManagementCart(context);
         this.idUser=idUser;
     }
 
+
     @NonNull
     @Override
-    public ArticleUserAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ArticleWaiterAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context=parent.getContext();
-        View inflate = LayoutInflater.from(context).inflate(R.layout.viewholder_list_article,parent,false);
+        View inflate= LayoutInflater.from(context).inflate(R.layout.viewholder_list_waiter_article,parent,false);
         return new viewholder(inflate);
     }
 
-
     @Override
-    public void onBindViewHolder(@NonNull ArticleUserAdapter.viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull ArticleWaiterAdapter.viewholder holder, int position) {
         Article article = items.get(position);
         holder.title.setText(items.get(position).getNaziv());
-        holder.price.setText(String.format("%.2f",items.get(position).getCijena())+"€");
-        Glide.with(context)
-                .load(items.get(position).getSlika())
-                .transform(new FitCenter(),new RoundedCorners(20))
-                .into(holder.img);
-        //Dohvacanje positiona za pritisnuti element
         holder.itemView.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("selected_article", article);
-            DetailArticles detailFragment = new DetailArticles();
-            detailFragment.setArguments(bundle);
-
-            ((FragmentActivity) context).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentDetailArticlesUser, detailFragment)
-                    .addToBackStack(null)
-                    .commit();
-            View frameLayout = ((FragmentActivity) context).findViewById(R.id.fragmentDetailArticlesUser);
-            frameLayout.setVisibility(View.VISIBLE);
-        });
-
-        //Otvaranje Dialoga pritiskom na Plus gumb
-        holder.addBtn.setOnClickListener(v -> {
             Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.dialog_customize);
             RecyclerView customRecyclerView = dialog.findViewById(R.id.customeRecyclerView);
@@ -126,16 +93,16 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
             public void onResponse(Call<ArrayList<Customize>> call, Response<ArrayList<Customize>> response) {
                 if (response.isSuccessful()) {
                     ArrayList<Customize> list = response.body();
-                        ArrayList<Customize> filteredList = new ArrayList<>();
-                        for (Customize customize : list) {
-                            if(Objects.equals(customize.getId_Kategorije(), catId))
-                            {
-                                filteredList.add(customize);
-                            }
+                    ArrayList<Customize> filteredList = new ArrayList<>();
+                    for (Customize customize : list) {
+                        if(Objects.equals(customize.getId_Kategorije(), catId))
+                        {
+                            filteredList.add(customize);
                         }
-                        Log.d("Category", "If : ");
-                        adapterCustomize = new CustomizeUserAdapter(filteredList);
-                        recyclerView.setAdapter(adapterCustomize);
+                    }
+                    Log.d("Category", "If : ");
+                    adapterCustomize = new CustomizeWaiterAdapter(filteredList);
+                    recyclerView.setAdapter(adapterCustomize);
 
                 } else {
                     // Handle unsuccessful response
@@ -148,23 +115,15 @@ public class ArticleUserAdapter extends RecyclerView.Adapter<ArticleUserAdapter.
             }
         });
     }
+
     @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-
-
-    public class viewholder  extends  RecyclerView.ViewHolder{
-        TextView title,price,addBtn;
-        ImageView img;
-        public viewholder(@NonNull View itemView){
+    public int getItemCount() {return items.size();}
+    public class viewholder extends RecyclerView.ViewHolder{
+        TextView title;
+        public viewholder(@NonNull View itemView)
+        {
             super(itemView);
-
-            title=itemView.findViewById(R.id.userTitleTxt);
-            price=itemView.findViewById(R.id.userPriceTxt);
-            addBtn=itemView.findViewById(R.id.userAddBtn);
-            img=itemView.findViewById(R.id.userImg);
+            title=itemView.findViewById(R.id.waiterTitleTxt);
         }
     }
 }
