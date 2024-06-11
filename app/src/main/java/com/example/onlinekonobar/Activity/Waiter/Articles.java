@@ -43,7 +43,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Button cart;
+    Button home,list,cart,profile;
     int idUser;
 
     @Override
@@ -56,7 +56,11 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
         category=findViewById(R.id.waiterCategoryRecycler);
         searchBtn=findViewById(R.id.waiterSearchBtn);
         inputSearch=findViewById(R.id.waiterSearchInp);
+        home=findViewById(R.id.getHomeWaiterBtn);
+        list=findViewById(R.id.getListWaiterBtn);
         cart=findViewById(R.id.getCardWaiterBtn);
+        profile=findViewById(R.id.getProfileWaiterBtn);
+
         getIntentExtra();
         initCategory();
         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -93,6 +97,25 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
 
             }
         });
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment profileFragmwnt = new Profile();
+                FragmentManager fragmentManager =getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for(Fragment fragment : fragmentManager.getFragments()){
+                    if(fragment !=null){
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentProfileWaiter, profileFragmwnt);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentProfileWaiter);
+                frameLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
     @Override
     public void onCategoryClicked(int categoryId) {

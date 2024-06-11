@@ -2,11 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragmentDetailInvoiceUser"
+    android:id="@+id/fragmentDetailInvoiceWaiter"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gray_screen_background"
-    tools:context=".Activity.User.DetailInvoice" >
+    tools:context=".Activity.Waiter.DetailInvoice" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
                 <TextView
-                    android:id="@+id/orderNumberInvoiceTxt"
+                    android:id="@+id/orderNumberInvoiceWaiterTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -71,7 +71,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView9" />
 
                 <TextView
-                    android:id="@+id/dateOrderInvocieTxt"
+                    android:id="@+id/dateOrderInvocieWaiterTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -82,7 +82,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView12" />
 
                 <TextView
-                    android:id="@+id/ststusOrderInvoiceTxt"
+                    android:id="@+id/ststusOrderInvoiceWaiterTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -104,7 +104,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailInvoiceRecycler"
+                android:id="@+id/detailInvoiceWaiterRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
@@ -171,7 +171,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
 
                 <TextView
-                    android:id="@+id/subtotalInvoiceTxt"
+                    android:id="@+id/subtotalInvoiceWaiterTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -182,7 +182,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView21" />
 
                 <TextView
-                    android:id="@+id/vatInvoiceTxt"
+                    android:id="@+id/vatInvoiceWaiterTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -193,7 +193,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView22" />
 
                 <TextView
-                    android:id="@+id/totalInvoiceTxt"
+                    android:id="@+id/totalInvoiceWaiterTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -202,6 +202,17 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView24" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/stornWaiterBtn"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/orange_button"
+                    android:text="Storniraj"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

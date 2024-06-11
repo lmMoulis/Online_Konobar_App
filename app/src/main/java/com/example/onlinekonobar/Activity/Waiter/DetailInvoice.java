@@ -1,6 +1,4 @@
-package com.example.onlinekonobar.Activity.User;
-
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+package com.example.onlinekonobar.Activity.Waiter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,7 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.onlinekonobar.Activity.User.Adapter.InvoiceDetailAdapter;
+import com.example.onlinekonobar.Activity.Waiter.Adapter.InvoiceDetailAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
@@ -40,6 +38,7 @@ public class DetailInvoice extends Fragment {
     private RecyclerView.Adapter adapterInvoice;
     private Invoice invoiceObject;
     TextView orderNumber,date,status,subtotal,vat,total;
+    Button storn;
     int invoiceId;
     Context context;
     RecyclerView itemInvoice;
@@ -47,15 +46,17 @@ public class DetailInvoice extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detail_invoice, container, false);
+        View view = inflater.inflate(R.layout.fragment_detail_invoice_waiter, container, false);
 
-        orderNumber=view.findViewById(R.id.orderNumberInvoiceTxt);
-        date=view.findViewById(R.id.dateOrderInvocieTxt);
-        status=view.findViewById(R.id.ststusOrderInvoiceTxt);
-        subtotal=view.findViewById(R.id.subtotalInvoiceTxt);
-        vat=view.findViewById(R.id.vatInvoiceTxt);
-        total=view.findViewById(R.id.totalInvoiceTxt);
-        itemInvoice=view.findViewById(R.id.detailInvoiceRecycler);
+        orderNumber=view.findViewById(R.id.orderNumberInvoiceWaiterTxt);
+        date=view.findViewById(R.id.dateOrderInvocieWaiterTxt);
+        status=view.findViewById(R.id.ststusOrderInvoiceWaiterTxt);
+        subtotal=view.findViewById(R.id.subtotalInvoiceWaiterTxt);
+        vat=view.findViewById(R.id.vatInvoiceWaiterTxt);
+        total=view.findViewById(R.id.totalInvoiceWaiterTxt);
+        itemInvoice=view.findViewById(R.id.detailInvoiceWaiterRecycler);
+        storn=view.findViewById(R.id.stornWaiterBtn);
+
         if (getArguments() != null) {
             invoiceObject = (Invoice) getArguments().getSerializable("selected_invoice");
             setVariable();
@@ -64,6 +65,71 @@ public class DetailInvoice extends Fragment {
             context=getContext();
         }
 
+        UserService userService = Client.getService();
+        Call<Invoice> callInvoice = userService.getInvoiceById(invoiceId);
+        callInvoice.enqueue(new Callback<Invoice>() {
+            @Override
+            public void onResponse(Call<Invoice> call, Response<Invoice> response) {
+                Invoice invoice= response.body();
+                if (invoice != null) {
+                    Log.d("Test","Get status"+invoice.getStatus());
+                    if(invoice.getStatus().equals("Stornirano"))
+                    {
+                        storn.setEnabled(false);
+                        storn.setAlpha(0.5f);
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<Invoice> call, Throwable throwable) {
+
+            }
+        });
+        storn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserService userService = Client.getService();
+                Call<Invoice> callInvoice = userService.getInvoiceById(invoiceId);
+                callInvoice.enqueue(new Callback<Invoice>() {
+                    @Override
+                    public void onResponse(Call<Invoice> call, Response<Invoice> response) {
+                        Invoice invoice= response.body();
+                        if (invoice != null) {
+                            invoice.setId(invoice.getId());
+                            invoice.setDokument_Id(invoice.getDokument_Id());
+                            invoice.setBroj_Racuna(invoice.getBroj_Racuna());
+                            invoice.setUkupan_Iznos(invoice.getUkupan_Iznos());
+                            invoice.setDatum(invoice.getDatum());
+                            invoice.setKorisnik_Id(invoice.getKorisnik_Id());
+                            invoice.setStatus("Stornirano");
+                            userService.stornInvoice(invoiceId,invoice).enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(context, "Racun je storniran", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(context, "Greška prilikom storniranja narudžbe.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable throwable) {
+
+                                }
+                            });
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Invoice> call, Throwable throwable) {
+
+                    }
+                });
+            }
+        });
         initList();
         return view;
     }
@@ -169,10 +235,8 @@ public class DetailInvoice extends Fragment {
             }
         });
     }
-
     private void setVariable()
     {
-
         if(invoiceObject !=null) {
             String brojRacuna = invoiceObject.getBroj_Racuna();
             int lastDashIndex = brojRacuna.lastIndexOf('-');
@@ -180,10 +244,9 @@ public class DetailInvoice extends Fragment {
                 String brojRacunaNovi = brojRacuna.substring(lastDashIndex + 1);
                 orderNumber.setText(brojRacunaNovi);
             }
+
             date.setText(String.valueOf(convertDateFormat(invoiceObject.getDatum())));
             status.setText(String.valueOf(invoiceObject.getStatus()));
-            subtotal.setText(String.format("%.2f",invoiceObject.getUkupan_Iznos()*0.75)+"€");
-            vat.setText(String.format("%.2f",invoiceObject.getUkupan_Iznos()*0.25)+"€");
             total.setText(String.format("%.2f", invoiceObject.getUkupan_Iznos())+"€");
         }
     }
@@ -201,4 +264,5 @@ public class DetailInvoice extends Fragment {
         }
         return newDateFormat;
     }
+
 }

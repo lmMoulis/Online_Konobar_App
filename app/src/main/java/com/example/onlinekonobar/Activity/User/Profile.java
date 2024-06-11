@@ -93,7 +93,6 @@ public class Profile extends Fragment {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getInt("userId", -1);
-        Log.d("fafsf","Id" +idUser);
         userService.getUserById(idUser).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
