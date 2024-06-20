@@ -12,27 +12,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <ImageView
-            android:id="@+id/profilePic"
+            android:id="@+id/profilePic1"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginTop="20dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
+            android:src="@drawable/user_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/user_profile" />
+            app:layout_constraintTop_toBottomOf="@+id/logoutUserBtn" />
 
         <TextView
             android:id="@+id/logoutUserBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:text="Odjava"
             android:textColor="#FF9F0F"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/profilePic" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/nameSurnameTxt"
@@ -44,7 +45,7 @@
             android:textSize="25dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profilePic" />
+            app:layout_constraintTop_toBottomOf="@+id/profilePic1" />
 
         <LinearLayout
             android:id="@+id/linearLayout7"

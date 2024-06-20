@@ -19,7 +19,7 @@ import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
 import com.example.onlinekonobar.Api.Item;
 import com.example.onlinekonobar.Api.UserService;
-import com.example.onlinekonobar.ManagementCart;
+import com.example.onlinekonobar.Activity.User.Adapter.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import retrofit2.Response;
 
 public class Card extends Fragment {
     private RecyclerView.Adapter adapterCardElement;
-    private ManagementCart managementCart;
+    private com.example.onlinekonobar.Activity.Waiter.Adapter.ManagementCart managementCart;
     RecyclerView cardElement;
     ArrayList<Article> cartArticles;
     ArrayList<Customize> cartCustomizes;
@@ -40,7 +40,7 @@ public class Card extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_card_waiter, container, false);
-        managementCart = new ManagementCart(getContext());
+        managementCart = new com.example.onlinekonobar.Activity.Waiter.Adapter.ManagementCart(getContext());
 
         managementCart.setUpdateTotalFeeCallback(new Runnable() {
             @Override

@@ -23,7 +23,8 @@ public class User implements Serializable {
     private String Datum_Rodenja;
     @SerializedName("pristup")
     private int Pristup;
-
+    @SerializedName("slika")
+    private String Slika;
     public int getId() {
         return Id;
     }
@@ -94,6 +95,14 @@ public class User implements Serializable {
 
     public void setPristup(int pristup) {
         Pristup = pristup;
+    }
+
+    public String getSlika() {
+        return Slika;
+    }
+
+    public void setSlika(String slika) {
+        Slika = slika;
     }
 }
 

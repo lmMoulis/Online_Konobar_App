@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/invoiceFragment"
     android:layout_width="match_parent"
@@ -7,9 +8,32 @@
     android:background="@drawable/gray_screen_background"
     tools:context=".Activity.User.InvoiceList">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/userInvoiceRecycler"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userInvoiceRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/emptyInvoiceList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Trenutno nemate niti jednu naduržbu"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/userInvoiceRecycler"
+            app:layout_constraintEnd_toEndOf="@+id/userInvoiceRecycler"
+            app:layout_constraintStart_toStartOf="@+id/userInvoiceRecycler"
+            app:layout_constraintTop_toTopOf="@+id/userInvoiceRecycler" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

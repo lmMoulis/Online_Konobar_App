@@ -1,17 +1,9 @@
-package com.example.onlinekonobar;
+package com.example.onlinekonobar.Activity.Waiter.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.example.onlinekonobar.Activity.User.Articles;
-import com.example.onlinekonobar.Activity.User.Card;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
@@ -20,10 +12,7 @@ import com.example.onlinekonobar.Api.Item;
 import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.UserService;
 import com.example.onlinekonobar.TinyDB;
-import com.example.onlinekonobar.ManagementCart.StockUpdateCallback;
 
-
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -116,13 +105,13 @@ public class ManagementCart {
         }
     }
     public void decrementQuantity(int articleId) {
-        checkStockAndUpdateQuantity(articleId, false, new StockUpdateCallback() {
+        checkStockAndUpdateQuantity(articleId, false, new com.example.onlinekonobar.Activity.User.Adapter.ManagementCart.StockUpdateCallback() {
             @Override
             public void onStockUpdate(boolean success) {}
         });
     }
 
-    public void checkStockAndUpdateQuantity(int articleId, boolean increment, StockUpdateCallback callback) {
+    public void checkStockAndUpdateQuantity(int articleId, boolean increment, com.example.onlinekonobar.Activity.User.Adapter.ManagementCart.StockUpdateCallback callback) {
         userService.getStockByArticleId(articleId).enqueue(new Callback<Stock>() {
             @Override
             public void onResponse(Call<Stock> call, Response<Stock> response) {
@@ -186,7 +175,7 @@ public class ManagementCart {
 
         }
     }
-    public void getTotalFee(final TotalFeeCallback callback) {
+    public void getTotalFee(final com.example.onlinekonobar.Activity.User.Adapter.ManagementCart.TotalFeeCallback callback) {
         ArrayList<Item> cartList = getListCart();
         double[] total = {0};
         final int[] pendingRequests = {cartList.size()};
@@ -227,7 +216,7 @@ public class ManagementCart {
 
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
             String formattedDate = sdf.format(currentTime);
             float totalAmount = 0;
             int dokument_Id=-1;
@@ -244,6 +233,7 @@ public class ManagementCart {
             invoice.setUkupan_Iznos(totalAmount);
             invoice.setDatum(formattedDate);
             invoice.setKorisnik_Id(userId);
+            invoice.setPreuzeto(true);
 
             userService.saveInvoice(invoice).enqueue(new Callback<Void>() {
                 @Override

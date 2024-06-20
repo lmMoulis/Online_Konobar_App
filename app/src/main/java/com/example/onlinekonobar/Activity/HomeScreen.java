@@ -10,7 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.onlinekonobar.Activity.User.Articles;
+import com.example.onlinekonobar.Activity.Admin.Stock;
+import com.example.onlinekonobar.Activity.Waiter.Articles;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.R;
 
@@ -35,10 +36,13 @@ public class HomeScreen extends AppCompatActivity {
                     // Ako je korisnik prijavljen, preusmjeri ga na odgovarajuću aktivnost
                     switch (userAccessLevel) {
                         case 1:
-                            intent = new Intent(HomeScreen.this, com.example.onlinekonobar.Activity.User.Articles.class);
+                            intent = new Intent(HomeScreen.this, com.example.onlinekonobar.Activity.User.ScanQR.class);
                             break;
                         case 2:
-                            intent = new Intent(HomeScreen.this, Articles.class);
+                            intent = new Intent(HomeScreen.this, com.example.onlinekonobar.Activity.Waiter.Articles.class);
+                            break;
+                        case 3:
+                            intent = new Intent(HomeScreen.this, Stock.class);
                             break;
                         default:
                             Toast.makeText(HomeScreen.this, "Nepoznat pristup!", Toast.LENGTH_SHORT).show();

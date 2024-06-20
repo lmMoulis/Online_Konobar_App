@@ -17,7 +17,6 @@ import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
 import com.example.onlinekonobar.Api.UserService;
-import com.example.onlinekonobar.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class ArticleWaiterAdapter extends RecyclerView.Adapter<ArticleWaiterAdap
     ArrayList<Article>items;
     Context context;
     private int idUser;
-    ManagementCart managementCart;
+    com.example.onlinekonobar.Activity.Waiter.Adapter.ManagementCart managementCart;
     CustomizeWaiterAdapter adapterCustomize;
 
     public ArticleWaiterAdapter(ArrayList<Article> items,Context context,int idUser)

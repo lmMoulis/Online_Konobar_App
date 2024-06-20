@@ -24,7 +24,6 @@ import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
 import com.example.onlinekonobar.Api.UserService;
-import com.example.onlinekonobar.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;

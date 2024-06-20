@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.onlinekonobar.Activity.User.Adapter.InvoiceUserAdapter;
 import com.example.onlinekonobar.Activity.Waiter.Adapter.InvoiceWaiterAdapter;
@@ -30,6 +31,7 @@ public class InvoiceList extends Fragment {
     private RecyclerView.Adapter adapterOrder;
     private RecyclerView invoice;
     int idUser;
+    TextView empty;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,8 +39,9 @@ public class InvoiceList extends Fragment {
         View view = inflater.inflate(R.layout.fragment_invoice_list_waiter, container, false);
 
         invoice = view.findViewById(R.id.waiterInvoiceRecycler);
+        empty=view.findViewById(R.id.emptyInvoiceListWaiter);
 
-initList();
+        initList();
         return view;
     }
     public void initList() {
@@ -66,8 +69,10 @@ initList();
                         invoice.setLayoutManager(new GridLayoutManager(getContext(), 1));
                         adapterOrder = new InvoiceWaiterAdapter(filteredInvoiceList, getContext());
                         invoice.setAdapter(adapterOrder);
+                        checkEmptyState();
                     } else {
                         Log.d("InvoiceList", "Invoice list is empty or null");
+                        checkEmptyState();
                     }
                 }
             }
@@ -77,5 +82,14 @@ initList();
                 Log.e("InvoiceList", "Error fetching invoices", throwable);
             }
         });
+    }
+    private void checkEmptyState() {
+        if (adapterOrder != null && adapterOrder.getItemCount() != 0) {
+            invoice.setVisibility(View.VISIBLE);
+            empty.setVisibility(View.GONE);
+        } else {
+            empty.setVisibility(View.VISIBLE);
+            invoice.setVisibility(View.GONE);
+        }
     }
 }

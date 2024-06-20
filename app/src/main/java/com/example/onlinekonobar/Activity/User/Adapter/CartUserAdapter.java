@@ -16,7 +16,6 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Customize;
-import com.example.onlinekonobar.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -119,7 +118,7 @@ public class CartUserAdapter extends RecyclerView.Adapter<CartUserAdapter.viewho
             number=itemView.findViewById(R.id.numberTxt);
             img=itemView.findViewById(R.id.cartImg);
             delete=itemView.findViewById(R.id.cartDeleteBtn);
-            plus=itemView.findViewById(R.id.plusBtn);
+            plus=itemView.findViewById(R.id.stockPlusBtn);
             minus=itemView.findViewById(R.id.minusBtn);
         }
     }

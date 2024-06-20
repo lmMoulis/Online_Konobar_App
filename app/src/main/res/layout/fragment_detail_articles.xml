@@ -169,7 +169,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
-                            android:id="@+id/plusBtn"
+                            android:id="@+id/stockPlusBtn"
                             android:layout_width="20dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"

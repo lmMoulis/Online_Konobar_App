@@ -14,9 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
-
         android:layout_marginRight="10dp"
-
         android:background="@drawable/gray_background">
 
         <LinearLayout
@@ -30,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/cartImg"
+                android:id="@+id/stockAdminImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
@@ -44,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/cartTitleTxt"
+                android:id="@+id/stockTitleAdminTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -54,63 +52,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/customeCartTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Custome"
-                android:textColor="#A19A9A"
-                android:textSize="11dp"
-                app:layout_constraintStart_toStartOf="@+id/cartTitleTxt"
-                app:layout_constraintTop_toBottomOf="@+id/cartTitleTxt" />
-
-            <LinearLayout
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/light_gray_rounded_trash"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/cartDeleteBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginRight="6dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/trash" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/cartPriceTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="7dp"
-                android:text="1.4€"
-                android:textColor="#FF9F0F"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
             <LinearLayout
                 android:layout_width="50dp"
                 android:layout_height="20dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/orange_button"
                 android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="@+id/customeCartTxt"
-                app:layout_constraintTop_toTopOf="@+id/cartPriceTxt">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stockTitleAdminTxt">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:id="@+id/minusBtn"
+                        android:id="@+id/stockMinusBtn"
                         android:layout_width="15dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
@@ -120,7 +76,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/numberTxt"
+                        android:id="@+id/stockNumberTxt"
                         android:layout_width="15dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="2dp"
@@ -130,7 +86,7 @@
                         android:textColor="#000000"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/minusBtn"
+                        app:layout_constraintStart_toEndOf="@+id/stockMinusBtn"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView

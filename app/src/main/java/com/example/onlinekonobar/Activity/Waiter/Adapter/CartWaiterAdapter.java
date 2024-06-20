@@ -16,7 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Customize;
-import com.example.onlinekonobar.ManagementCart;
+import com.example.onlinekonobar.Activity.User.Adapter.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -25,10 +25,10 @@ public class CartWaiterAdapter extends RecyclerView.Adapter<CartWaiterAdapter.vi
     ArrayList<Article> items;
     ArrayList<Customize> itemsCustomize;
     private Context context;
-    ManagementCart managementCart;
+    com.example.onlinekonobar.Activity.Waiter.Adapter.ManagementCart managementCart;
     private Runnable emptyStateChecker;
 
-    public CartWaiterAdapter(ArrayList<Article> items, ArrayList<Customize>itemsCustomize , Context context, ManagementCart managementCart, Runnable emptyStateChecker) {
+    public CartWaiterAdapter(ArrayList<Article> items, ArrayList<Customize>itemsCustomize , Context context, com.example.onlinekonobar.Activity.Waiter.Adapter.ManagementCart managementCart, Runnable emptyStateChecker) {
         this.items = items;
         this.context = context;
         this.itemsCustomize=itemsCustomize;

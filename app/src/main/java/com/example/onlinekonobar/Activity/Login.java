@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.onlinekonobar.Activity.Admin.Stock;
 import com.example.onlinekonobar.Activity.User.ScanQR;
 import com.example.onlinekonobar.Activity.Waiter.Articles;
 import com.example.onlinekonobar.Api.Client;
@@ -88,10 +89,13 @@ public class Login extends AppCompatActivity {
                             Intent intent;
                             switch (pristup) {
                                 case 1:
-                                    intent = new Intent(Login.this, com.example.onlinekonobar.Activity.User.Articles.class);
+                                    intent = new Intent(Login.this, ScanQR.class);
                                     break;
                                 case 2:
                                     intent = new Intent(Login.this, Articles.class);
+                                    break;
+                                case 3:
+                                    intent = new Intent(Login.this, Stock.class);
                                     break;
                                 default:
                                     Toast.makeText(Login.this, "Nepoznat pristup!", Toast.LENGTH_SHORT).show();

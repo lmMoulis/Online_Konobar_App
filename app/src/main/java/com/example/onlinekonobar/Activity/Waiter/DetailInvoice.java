@@ -103,7 +103,7 @@ public class DetailInvoice extends Fragment {
                             invoice.setDatum(invoice.getDatum());
                             invoice.setKorisnik_Id(invoice.getKorisnik_Id());
                             invoice.setStatus("Stornirano");
-                            userService.stornInvoice(invoiceId,invoice).enqueue(new Callback<Void>() {
+                            userService.putNewElementInvoice(invoiceId,invoice).enqueue(new Callback<Void>() {
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {

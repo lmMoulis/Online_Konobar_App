@@ -28,7 +28,7 @@ import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
 import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.UserService;
-import com.example.onlinekonobar.ManagementCart;
+import com.example.onlinekonobar.Activity.User.Adapter.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class DetailArticles extends Fragment {
         addToCart = view.findViewById(R.id.addToCartBtn);
         image = view.findViewById(R.id.img);
         minus=view.findViewById(R.id.minusBtn);
-        plus=view.findViewById(R.id.plusBtn);
+        plus=view.findViewById(R.id.stockPlusBtn);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         int idUser = sharedPreferences.getInt("userId", -1);

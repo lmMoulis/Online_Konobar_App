@@ -43,7 +43,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Button home,list,cart,profile;
+    Button home,order,cart,profile;
     int idUser;
 
     @Override
@@ -57,7 +57,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
         searchBtn=findViewById(R.id.waiterSearchBtn);
         inputSearch=findViewById(R.id.waiterSearchInp);
         home=findViewById(R.id.getHomeWaiterBtn);
-        list=findViewById(R.id.getListWaiterBtn);
+        order=findViewById(R.id.getOrderWaiterBtn);
         cart=findViewById(R.id.getCardWaiterBtn);
         profile=findViewById(R.id.getProfileWaiterBtn);
 
@@ -76,6 +76,35 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
                 searchText=inputSearch.getText().toString();
                 isSearch =!searchText.isEmpty();
                 initList();
+            }
+        });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentManager.beginTransaction().hide(fragment).commit();
+                    }
+                }
+            }
+        });
+        order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment takeOrderFragment = new TakeOrder();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentTakeOrder, takeOrderFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentTakeOrder);
+                frameLayout.setVisibility(View.VISIBLE);
             }
         });
         cart.setOnClickListener(new View.OnClickListener() {
@@ -116,10 +145,10 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
             }
         });
 
+
     }
     @Override
     public void onCategoryClicked(int categoryId) {
-        // Ovdje primite CategoryId i izvršite željene radnje
         Log.d("Category", "Kategorija ID: " + categoryId);
         if(categoryId==catId) {
             catId=0;

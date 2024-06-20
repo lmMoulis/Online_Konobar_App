@@ -6,6 +6,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -50,10 +51,14 @@ public interface UserService {
     Call<User> getUserById(@Path("id") int id);
     @GET("api/RacunControllers")
     Call<ArrayList<Invoice>>getAllInvoice();
+    @GET("api/SkladisteControllers")
+    Call<ArrayList<Stock>>getAllStock();
     @GET("api/StavkaControllers")
     Call<ArrayList<Item>>getAllItems();
 
     @PUT("api/RacunControllers/{id}")
-    Call<Void> stornInvoice(@Path("id") int id, @Body Invoice invoice);
+    Call<Void> putNewElementInvoice(@Path("id") int id, @Body Invoice invoice);
+    @PUT("api/Korisnik/{id}")
+    Call<Void> setUserImage(@Path("id")int id ,@Body User user);
 }
 

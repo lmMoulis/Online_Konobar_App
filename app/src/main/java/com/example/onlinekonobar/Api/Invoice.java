@@ -19,6 +19,12 @@ public class Invoice implements Serializable {
    public int Korisnik_Id;
     @SerializedName("status")
     public String Status;
+    @SerializedName("konobar_Id")
+    public int Konobar_Id;
+    @SerializedName("preuzeto")
+    public Boolean Preuzeto;
+    @SerializedName("stol")
+    public String Stol;
 
 
     public int getId() {
@@ -75,5 +81,30 @@ public class Invoice implements Serializable {
 
     public void setStatus(String status) {
         Status = status;
+    }
+
+
+    public int getKonobar_Id() {
+        return Konobar_Id;
+    }
+
+    public void setKonobar_Id(int konobar_Id) {
+        Konobar_Id = konobar_Id;
+    }
+
+    public Boolean getPreuzeto() {
+        return Preuzeto;
+    }
+
+    public void setPreuzeto(Boolean preuzeto) {
+        Preuzeto = preuzeto;
+    }
+
+    public String getStol() {
+        return Stol;
+    }
+
+    public void setStol(String stol) {
+        Stol = stol;
     }
 }

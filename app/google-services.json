@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "9097469835",
+    "project_id": "onlinekonobar-65c8b",
+    "storage_bucket": "onlinekonobar-65c8b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9097469835:android:7288ba0aba130757b5198e",
+        "android_client_info": {
+          "package_name": "com.example.onlinekonobar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAecGFAOlf5q77_MMcUCKqa3RrOAvWeeKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9097469835:android:ed6c15e2a54872c9b5198e",
+        "android_client_info": {
+          "package_name": "com.rentacar.lmoulis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAecGFAOlf5q77_MMcUCKqa3RrOAvWeeKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

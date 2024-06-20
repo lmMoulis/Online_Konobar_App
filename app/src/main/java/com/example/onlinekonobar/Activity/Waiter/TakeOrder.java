@@ -1,6 +1,4 @@
-package com.example.onlinekonobar.Activity.User;
-
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+package com.example.onlinekonobar.Activity.Waiter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.onlinekonobar.Activity.User.Adapter.InvoiceUserAdapter;
+import com.example.onlinekonobar.Activity.Waiter.Adapter.InvoiceWaiterAdapter;
+import com.example.onlinekonobar.Activity.Waiter.Adapter.TakeOrderAdapter;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.Api.UserService;
@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InvoiceList extends Fragment {
+public class TakeOrder extends Fragment {
     private RecyclerView.Adapter adapterOrder;
     private RecyclerView invoice;
     int idUser;
@@ -37,10 +37,10 @@ public class InvoiceList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_invoice_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_take_order_waiter, container, false);
 
-        invoice = view.findViewById(R.id.userInvoiceRecycler);
-        empty=view.findViewById(R.id.emptyInvoiceList);
+        invoice = view.findViewById(R.id.waiterTakeOrderRecycler);
+        empty = view.findViewById(R.id.emptyTakeOrderTxt);
         initList();
         return view;
     }
@@ -48,7 +48,7 @@ public class InvoiceList extends Fragment {
     public void initList() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         idUser = sharedPreferences.getInt("userId", -1);
-        Log.d("initList: ","Id user"+idUser);
+        Log.d("initList: ", "Id user" + idUser);
 
         UserService service = Client.getService();
         Call<ArrayList<Invoice>> call = service.getAllInvoice();
@@ -58,22 +58,23 @@ public class InvoiceList extends Fragment {
                 if (response.isSuccessful()) {
                     ArrayList<Invoice> invoiceList = response.body();
                     if (invoiceList != null && !invoiceList.isEmpty()) {
-                        // Filtriraj račune prema idUser
+
                         ArrayList<Invoice> filteredInvoiceList = new ArrayList<>();
                         for (Invoice invoice : invoiceList) {
-                            if (invoice.getKorisnik_Id() == idUser) { // Pretpostavljamo da Invoice ima metodu getUserId()
+
+                            if (invoice.getKonobar_Id() == idUser && Boolean.FALSE.equals(invoice.getPreuzeto())) {
                                 filteredInvoiceList.add(invoice);
                             }
                         }
 
                         // Postavi filtriranu listu u adapter
                         invoice.setLayoutManager(new GridLayoutManager(getContext(), 1));
-                        adapterOrder = new InvoiceUserAdapter(filteredInvoiceList, getContext());
+                        adapterOrder = new TakeOrderAdapter(filteredInvoiceList, getContext());
                         invoice.setAdapter(adapterOrder);
                         checkEmptyState();
                     } else {
-                        checkEmptyState();
                         Log.d("InvoiceList", "Invoice list is empty or null");
+                        checkEmptyState();
                     }
                 }
             }
@@ -84,6 +85,7 @@ public class InvoiceList extends Fragment {
             }
         });
     }
+
     private void checkEmptyState() {
         if (adapterOrder != null && adapterOrder.getItemCount() != 0) {
             invoice.setVisibility(View.VISIBLE);
