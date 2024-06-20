@@ -109,6 +109,24 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
                 frameLayout.setVisibility(View.VISIBLE);
             }
         });
+        allOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment invoiceListFragment = new InvoiceListAdmin();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentInvoiceListAdmin, invoiceListFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentInvoiceListAdmin);
+                frameLayout.setVisibility(View.VISIBLE);
+            }
+        });
 
     }
     @Override

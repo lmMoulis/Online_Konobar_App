@@ -2,11 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragmentDetailInvoiceWaiter"
+    android:id="@+id/fragmentDetailInvoiceAdmin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gray_screen_background"
-    tools:context=".Activity.Waiter.DetailInvoice" >
+    tools:context=".Activity.Admin.InvoiceDetailAdmin" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
                 <TextView
-                    android:id="@+id/orderNumberInvoiceWaiterTxt"
+                    android:id="@+id/orderNumberInvoiceAdminTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -71,7 +71,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView9" />
 
                 <TextView
-                    android:id="@+id/dateOrderInvocieWaiterTxt"
+                    android:id="@+id/dateOrderInvocieAdminTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -82,7 +82,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView12" />
 
                 <TextView
-                    android:id="@+id/ststusOrderInvoiceWaiterTxt"
+                    android:id="@+id/ststusOrderInvoiceAdminTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -106,7 +106,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailInvoiceWaiterRecycler"
+                android:id="@+id/detailInvoiceAdminRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
@@ -174,7 +174,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
 
                 <TextView
-                    android:id="@+id/subtotalInvoiceWaiterTxt"
+                    android:id="@+id/subtotalInvoiceAdminTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -185,7 +185,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView21" />
 
                 <TextView
-                    android:id="@+id/vatInvoiceWaiterTxt"
+                    android:id="@+id/vatInvoiceAdminTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -196,7 +196,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView22" />
 
                 <TextView
-                    android:id="@+id/totalInvoiceWaiterTxt"
+                    android:id="@+id/totalInvoiceAdminTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
@@ -207,7 +207,7 @@
                     app:layout_constraintTop_toTopOf="@+id/textView24" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/stornWaiterBtn"
+                    android:id="@+id/stornAdminBtn"
                     android:layout_width="150dp"
                     android:layout_height="35dp"
                     android:layout_marginBottom="10dp"

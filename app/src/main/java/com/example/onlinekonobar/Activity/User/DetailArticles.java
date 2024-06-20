@@ -55,7 +55,6 @@ public class DetailArticles extends Fragment {
         // Inflating the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail_articles, container, false);
 
-        // Initialize UI elements
         title = view.findViewById(R.id.titleTxt);
         price = view.findViewById(R.id.priceTxt);
         volumen = view.findViewById(R.id.volumenTxt);
