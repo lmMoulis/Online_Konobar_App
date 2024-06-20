@@ -2,6 +2,9 @@ package com.example.onlinekonobar.Activity.User;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,8 +18,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.onlinekonobar.Activity.Waiter.Profile;
 import com.example.onlinekonobar.R;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
@@ -51,9 +56,29 @@ public class ScanQR extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Prvo sakrijte elemente iz aktivnosti
+                qrScan.setVisibility(View.GONE);
+                profile.setVisibility(View.GONE);
+
+                Fragment profileFragment = new com.example.onlinekonobar.Activity.User.Profile();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentDetailInvoiceUserFalse, profileFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentDetailInvoiceUserFalse);
+                frameLayout.setVisibility(View.VISIBLE);
+
 
             }
         });
+
+
     }
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

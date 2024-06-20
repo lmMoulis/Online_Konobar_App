@@ -1,10 +1,13 @@
 package com.example.onlinekonobar.Activity.User.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.onlinekonobar.Activity.User.ScanQR;
+import com.example.onlinekonobar.Activity.Waiter.SelectTable;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
@@ -222,7 +225,7 @@ public class ManagementCart {
 
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
             String formattedDate = sdf.format(currentTime);
             float totalAmount = 0;
             int dokument_Id=-1;
@@ -246,6 +249,8 @@ public class ManagementCart {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(context, "Narudžba je kreirana", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, ScanQR.class);
+                        context.startActivity(intent);
                     } else {
                         Toast.makeText(context, "Greška prilikom kreiranja narudžbe.", Toast.LENGTH_SHORT).show();
                     }

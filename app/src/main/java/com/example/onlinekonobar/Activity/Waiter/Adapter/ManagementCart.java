@@ -1,9 +1,12 @@
 package com.example.onlinekonobar.Activity.Waiter.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.onlinekonobar.Activity.Waiter.SelectTable;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
@@ -209,6 +212,8 @@ public class ManagementCart {
 
     }
     public void saveCartToDatabase(int userId) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("tablePref",Context.MODE_PRIVATE);
+        String table=sharedPreferences.getString("tableValue",null);
         ArrayList<Item> cartList = getListCart();
         if (cartList != null && !cartList.isEmpty()) {
 
@@ -233,13 +238,17 @@ public class ManagementCart {
             invoice.setUkupan_Iznos(totalAmount);
             invoice.setDatum(formattedDate);
             invoice.setKorisnik_Id(userId);
+            invoice.setKonobar_Id(userId);
             invoice.setPreuzeto(true);
+            invoice.setStol(table);
 
             userService.saveInvoice(invoice).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(context, "Narudžba je kreirana", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, SelectTable.class);
+                        context.startActivity(intent);
                     } else {
                         Toast.makeText(context, "Greška prilikom kreiranja narudžbe.", Toast.LENGTH_SHORT).show();
                     }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinekonobar.Activity.Admin.InvoiceDetailAdmin;
 import com.example.onlinekonobar.Activity.Waiter.DetailInvoice;
 import com.example.onlinekonobar.Api.Invoice;
+import com.example.onlinekonobar.Api.User;
 import com.example.onlinekonobar.R;
 
 import java.text.ParseException;
@@ -29,10 +30,12 @@ import java.util.Locale;
 public class InvoiceListAdminAdapter extends RecyclerView.Adapter<InvoiceListAdminAdapter.viewholder> {
 
     private ArrayList<Invoice> invoicesItems;
+    private ArrayList<User>usersItems;
     private Context context;
 
-    public InvoiceListAdminAdapter(ArrayList<Invoice> invoicesItems, Context context) {
+    public InvoiceListAdminAdapter(ArrayList<Invoice> invoicesItems,ArrayList<User>usersItems, Context context) {
         this.invoicesItems = invoicesItems;
+        this.usersItems=usersItems;
         this.context = context;
     }
 
@@ -46,7 +49,8 @@ public class InvoiceListAdminAdapter extends RecyclerView.Adapter<InvoiceListAdm
     @Override
     public void onBindViewHolder(@NonNull InvoiceListAdminAdapter.viewholder holder, int position) {
         Invoice invoice = invoicesItems.get(position);
-        holder.name.setText(invoice.getKorisnik_Id()+"");
+        User users=usersItems.get(position);
+        holder.name.setText(users.getIme()+" "+  users.getPrezime());
         String brojRacuna = invoice.getBroj_Racuna();
         int lastDashIndex = brojRacuna.lastIndexOf('-');
         if (lastDashIndex != -1) {

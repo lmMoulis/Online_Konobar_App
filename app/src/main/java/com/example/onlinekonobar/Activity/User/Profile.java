@@ -57,7 +57,7 @@ public class Profile extends Fragment {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
-    TextView name,countOrder,email,date,gender,password,logout;
+    TextView name,countOrder,email,date,gender,password,logout,backQr;
     ImageView order,profilePicture;
     int orderNum;
     ProgressBar progressBar;
@@ -71,10 +71,11 @@ public class Profile extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         name=view.findViewById(R.id.nameSurnameTxt);
-        countOrder=view.findViewById(R.id.countOrderTxt);
+//        countOrder=view.findViewById(R.id.countOrderTxt);
         email=view.findViewById(R.id.emailProfileTxt);
         date=view.findViewById(R.id.dateProfileTxt);
         gender=view.findViewById(R.id.genderProfileTxt);
+        backQr=view.findViewById(R.id.qrBackBtn);
         password=view.findViewById(R.id.passwordProfileTxt);
         order=view.findViewById(R.id.getOrders);
         progressBar=view.findViewById(R.id.progressBarProfile);
@@ -123,6 +124,7 @@ public class Profile extends Fragment {
     }
     private void initList() {
         progressBar.setVisibility(View.VISIBLE);
+
         UserService userService= Client.getService();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -152,7 +154,7 @@ public class Profile extends Fragment {
     }
     public void updateUI(User user)
     {
-        countOrder.setText(orderNum+"");
+//        countOrder.setText(orderNum+"");
         name.setText(user.getIme()+" "+user.getPrezime());
         email.setText(user.getEmail());
         date.setText(convertDateFormat(user.getDatum_Rodenja()));
