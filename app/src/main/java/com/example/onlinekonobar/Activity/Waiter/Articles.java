@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -43,7 +44,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Button home,order,cart,profile;
+    ImageButton home,order,cart,profile;
     int idUser;
 
     @Override

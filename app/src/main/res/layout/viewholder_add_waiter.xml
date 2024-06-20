@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp"
+    android:backgroundTint="#18171C">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/gray_background_all_rounded"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/profilePicturePeople"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/addWaiterNameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Ime Prezime"
+                android:textColor="#A19A9A"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/profilePicturePeople"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/addWaiterEmailTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="#A19A9A"
+                app:layout_constraintStart_toStartOf="@+id/addWaiterNameTxt"
+                app:layout_constraintTop_toBottomOf="@+id/addWaiterNameTxt" />
+
+            <TextView
+                android:id="@+id/addWaiterBirthTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datum rođenja"
+                android:textColor="#A19A9A"
+                app:layout_constraintStart_toStartOf="@+id/addWaiterEmailTxt"
+                app:layout_constraintTop_toBottomOf="@+id/addWaiterEmailTxt" />
+            <ImageView
+                android:id="@+id/peopleAdd"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/arrow_point_right_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -78,7 +78,6 @@ public class DetailInvoice extends Fragment {
                         storn.setEnabled(false);
                         storn.setAlpha(0.5f);
                     }
-
                 }
             }
             @Override
@@ -107,7 +106,8 @@ public class DetailInvoice extends Fragment {
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {
-                                        Toast.makeText(context, "Racun je storniran", Toast.LENGTH_SHORT).show();
+                                        refreshData();
+
                                     } else {
                                         Toast.makeText(context, "Greška prilikom storniranja narudžbe.", Toast.LENGTH_SHORT).show();
                                     }
@@ -244,12 +244,32 @@ public class DetailInvoice extends Fragment {
                 String brojRacunaNovi = brojRacuna.substring(lastDashIndex + 1);
                 orderNumber.setText(brojRacunaNovi);
             }
-
             date.setText(String.valueOf(convertDateFormat(invoiceObject.getDatum())));
             status.setText(String.valueOf(invoiceObject.getStatus()));
             total.setText(String.format("%.2f", invoiceObject.getUkupan_Iznos())+"€");
         }
     }
+
+    private void refreshData() {
+        UserService userService = Client.getService();
+        Call<Invoice> callInvoice = userService.getInvoiceById(invoiceId);
+        callInvoice.enqueue(new Callback<Invoice>() {
+            @Override
+            public void onResponse(Call<Invoice> call, Response<Invoice> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    invoiceObject = response.body();
+                    setVariable();
+                    initList(); // Ponovno pokretanje funkcije za dohvaćanje podataka
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Invoice> call, Throwable throwable) {
+                Log.e("refreshData", "Error fetching invoice: " + throwable.getMessage());
+            }
+        });
+    }
+
 
     public String convertDateFormat(String date) {
         String newDateFormat = "";

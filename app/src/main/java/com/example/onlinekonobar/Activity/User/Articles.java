@@ -1,12 +1,14 @@
 package com.example.onlinekonobar.Activity.User;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -46,7 +48,7 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Button home,list,cart,profile;
+    ImageButton home,list,cart,profile;
     int idUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,28 @@ public class Articles extends AppCompatActivity implements CategoryAdapter.Categ
 
             }
         });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Articles.this,ScanQR.class);
+                startActivity(intent);
+            }
+        });
+        list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.commit();
+            }
+        });
+
         cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

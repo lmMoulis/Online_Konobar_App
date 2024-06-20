@@ -20,7 +20,7 @@ public class Client {
 
         // Kreiranje Retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://172.20.10.3:5008")
+                .baseUrl("http://192.168.4.66:5008")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

@@ -60,5 +60,8 @@ public interface UserService {
     Call<Void> putNewElementInvoice(@Path("id") int id, @Body Invoice invoice);
     @PUT("api/Korisnik/{id}")
     Call<Void> setUserImage(@Path("id")int id ,@Body User user);
+
+    @GET("api/Korisnik")
+    Call<ArrayList<User>>getAllUsers();
 }
 

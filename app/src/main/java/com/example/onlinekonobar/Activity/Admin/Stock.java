@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -13,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinekonobar.Activity.Admin.Adapter.StockAdminAdapter;
 import com.example.onlinekonobar.Activity.User.Adapter.ArticleUserAdapter;
 import com.example.onlinekonobar.Activity.User.Articles;
+import com.example.onlinekonobar.Activity.Waiter.TakeOrder;
 import com.example.onlinekonobar.Adapter.CategoryAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Category;
@@ -44,7 +49,7 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    Button home,list,cart,profile;
+    ImageButton home,newWaiter,allOrder,profile;
     int idUser;
 
     @Override
@@ -58,8 +63,8 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
         searchBtn=findViewById(R.id.adminSearchBtn);
         inputSearch=findViewById(R.id.adminSearchInp);
         home=findViewById(R.id.getHomeAdminBtn);
-        list=findViewById(R.id.getListAdminBtn);
-        cart=findViewById(R.id.getCardAdminBtn);
+        newWaiter=findViewById(R.id.getNewWaiterBtn);
+        allOrder=findViewById(R.id.getAllOrdersBtn);
         profile=findViewById(R.id.getProfileAdminBtn);
 
         getIntentExtra();
@@ -75,6 +80,36 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
 
             }
         });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentManager.beginTransaction().hide(fragment).commit();
+                    }
+                }
+            }
+        });
+        newWaiter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment addWaiterFragment = new AddWaiter();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentAddWaiter, addWaiterFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentAddWaiter);
+                frameLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
     @Override
     public void onCategoryClicked(int categoryId) {
