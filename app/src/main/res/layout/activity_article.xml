@@ -120,7 +120,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:src="@drawable/home_icon1" />
+            android:src="@drawable/home_icon1_orange" />
 
         <ImageButton
             android:id="@+id/getCardBtn"
@@ -129,7 +129,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            android:src="@drawable/bag" />
+            android:src="@drawable/bag_orange" />
 
         <ImageButton
             android:id="@+id/getListBtn"
@@ -138,7 +138,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:src="@drawable/list" />
+            android:src="@drawable/list_orange" />
 
         <ImageButton
             android:id="@+id/getProfileBtn"
@@ -147,7 +147,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:src="@drawable/profile" />
+            android:src="@drawable/profile_orange" />
 
     </LinearLayout>
 

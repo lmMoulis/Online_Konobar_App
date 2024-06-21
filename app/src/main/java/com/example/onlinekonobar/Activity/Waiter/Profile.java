@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.onlinekonobar.Activity.Login;
+import com.example.onlinekonobar.Activity.User.ScanQR;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.Api.User;
@@ -55,7 +56,7 @@ public class Profile extends Fragment {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
-    TextView name,countOrder,email,date,gender,password,logout;
+    TextView name,countOrder,email,date,gender,password,logout,selectTabel;
     ImageView order,takeOrder,profilePicture;
     int orderNum;
     ProgressBar progressBar;
@@ -72,13 +73,14 @@ public class Profile extends Fragment {
         countOrder=view.findViewById(R.id.countOrderWaiterTxt);
         email=view.findViewById(R.id.emailProfileWaiterTxt);
         date=view.findViewById(R.id.dateProfileWaiterTxt);
-        gender=view.findViewById(R.id.genderProfileWaiterTxt);
+//        gender=view.findViewById(R.id.genderProfileWaiterTxt);
         password=view.findViewById(R.id.passwordProfileWaiterTxt);
         order=view.findViewById(R.id.getWaiterOrders);
         takeOrder=view.findViewById(R.id.takeOrderWaiter);
         progressBar=view.findViewById(R.id.progressBarWaiterProfile);
         logout=view.findViewById(R.id.logoutWaiterBtn);
         profilePicture=view.findViewById(R.id.profileWaiterPic);
+        selectTabel=view.findViewById(R.id.tableBackBtn);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
@@ -99,7 +101,13 @@ public class Profile extends Fragment {
 
             }
         });
-
+       selectTabel.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(getContext(), SelectTable.class);
+               startActivity(intent);
+           }
+       });
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,12 +176,21 @@ public class Profile extends Fragment {
         name.setText(user.getIme()+" "+user.getPrezime());
         email.setText(user.getEmail());
         date.setText(convertDateFormat(user.getDatum_Rodenja()));
-        gender.setText(user.getSpol());
-        Glide.with(requireContext())
-                .load(user.getSlika())
-                .fitCenter()
-                .circleCrop()
-                .into(profilePicture);
+//        gender.setText(user.getSpol());
+//        Glide.with(requireContext())
+//                .load(user.getSlika())
+//                .fitCenter()
+//                .circleCrop()
+//                .into(profilePicture);
+        if (user.getSlika() != null && !user.getSlika().isEmpty()) {
+            Glide.with(requireContext())
+                    .load(user.getSlika())
+                    .fitCenter()
+                    .circleCrop()
+                    .into(profilePicture);
+        } else {
+            profilePicture.setImageResource(R.drawable.user_profile);
+        }
     }
     public void getAllOrder()
     {

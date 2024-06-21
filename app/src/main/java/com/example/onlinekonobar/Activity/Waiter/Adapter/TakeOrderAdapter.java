@@ -2,6 +2,7 @@ package com.example.onlinekonobar.Activity.Waiter.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlinekonobar.Activity.Waiter.DetailInvoice;
+import com.example.onlinekonobar.Activity.Waiter.SelectTable;
+import com.example.onlinekonobar.Activity.Waiter.TakeOrder;
 import com.example.onlinekonobar.Api.Category;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Invoice;
@@ -85,6 +88,8 @@ public class TakeOrderAdapter extends RecyclerView.Adapter<TakeOrderAdapter.view
                                     invoicesItems.remove(position);
                                     notifyItemRemoved(position);
                                     notifyItemRangeChanged(position, invoicesItems.size());
+                                    Intent intent = new Intent(context, SelectTable.class);
+                                    context.startActivity(intent);
                                 } else {
                                     Toast.makeText(context, "Greška prilikom preuzimanja", Toast.LENGTH_SHORT).show();
                                 }

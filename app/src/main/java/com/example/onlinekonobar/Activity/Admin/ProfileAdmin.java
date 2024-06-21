@@ -55,7 +55,7 @@ public class ProfileAdmin extends Fragment {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
-    TextView name,countOrder,email,date,gender,password,logout;
+    TextView name,countOrder,email,date,password,logout;
     ImageView order,takeOrder,profilePicture;
     int orderNum;
     ProgressBar progressBar;
@@ -72,10 +72,10 @@ public class ProfileAdmin extends Fragment {
         countOrder=view.findViewById(R.id.countOrderAdminTxt);
         email=view.findViewById(R.id.emailProfileAdminTxt);
         date=view.findViewById(R.id.dateProfileAdminTxt);
-        gender=view.findViewById(R.id.genderProfileAdminTxt);
+//        gender=view.findViewById(R.id.genderProfileAdminTxt);
         password=view.findViewById(R.id.passwordProfileAdminTxt);
         order=view.findViewById(R.id.getAdminOrders);
-        takeOrder=view.findViewById(R.id.takeOrderAdmin);
+//        takeOrder=view.findViewById(R.id.takeOrderAdmin);
         progressBar=view.findViewById(R.id.progressBarAdminProfile);
         logout=view.findViewById(R.id.logoutAdminBtn);
         profilePicture=view.findViewById(R.id.profileAdminPic);
@@ -111,6 +111,9 @@ public class ProfileAdmin extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+
+
+
         profilePicture.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -158,12 +161,16 @@ public class ProfileAdmin extends Fragment {
         name.setText(user.getIme()+" "+user.getPrezime());
         email.setText(user.getEmail());
         date.setText(convertDateFormat(user.getDatum_Rodenja()));
-        gender.setText(user.getSpol());
-        Glide.with(requireContext())
-                .load(user.getSlika())
-                .fitCenter()
-                .circleCrop()
-                .into(profilePicture);
+//        gender.setText(user.getSpol());
+        if (user.getSlika() != null && !user.getSlika().isEmpty()) {
+            Glide.with(requireContext())
+                    .load(user.getSlika())
+                    .fitCenter()
+                    .circleCrop()
+                    .into(profilePicture);
+        } else {
+            profilePicture.setImageResource(R.drawable.user_profile);
+        }
     }
     public String convertDateFormat(String date) {
         String newDateFormat = "";

@@ -12,11 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.onlinekonobar.R;
 
 public class SelectTable extends AppCompatActivity {
     Button Stol1,Stol2,Stol3,Stol4,Stol5,Stol6;
+    Button profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,34 @@ public class SelectTable extends AppCompatActivity {
             openNewActivity("Stol-6");
         });
 
+        profile=findViewById(R.id.selectTableWaiterBtn);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Prvo sakrijte elemente iz aktivnosti
+                Stol1.setVisibility(View.GONE);
+                Stol2.setVisibility(View.GONE);
+                Stol3.setVisibility(View.GONE);
+                Stol4.setVisibility(View.GONE);
+                Stol5.setVisibility(View.GONE);
+                Stol6.setVisibility(View.GONE);
+                profile.setVisibility(View.GONE);
+
+                Fragment profileFragment = new com.example.onlinekonobar.Activity.Waiter.Profile();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentDetailInvoiceWaiterFalse, profileFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                View frameLayout = findViewById(R.id.fragmentDetailInvoiceWaiterFalse);
+                frameLayout.setVisibility(View.VISIBLE);
+            }
+        });
 
 
 

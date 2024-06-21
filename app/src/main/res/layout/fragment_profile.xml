@@ -21,7 +21,9 @@
             android:src="@drawable/user_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@+id/logoutUserBtn" />
+
 
         <TextView
             android:id="@+id/logoutUserBtn"
@@ -103,7 +105,7 @@
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:background="@drawable/gray_backgorund_top_rounded"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -165,6 +167,7 @@
                     android:text="Spol"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@+id/dateProfileTxt"
                     app:layout_constraintTop_toBottomOf="@+id/dateProfileTxt" />
 
@@ -175,6 +178,7 @@
                     android:text="Muški"
                     android:textColor="#A19A9A"
                     android:textSize="20sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@+id/textView13"
                     app:layout_constraintTop_toBottomOf="@+id/textView13" />
 

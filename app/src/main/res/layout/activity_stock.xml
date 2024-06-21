@@ -103,7 +103,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:src="@drawable/home_icon1" />
+            android:src="@drawable/home_icon1_orange" />
 
         <ImageButton
             android:id="@+id/getNewWaiterBtn"
@@ -112,7 +112,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:src="@drawable/add_waiter" />
+            android:src="@drawable/add_waiter_orange" />
 
         <ImageButton
             android:id="@+id/getAllOrdersBtn"
@@ -121,7 +121,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
-            android:src="@drawable/order_icon" />
+            android:src="@drawable/order_icon_orange" />
 
         <ImageButton
             android:id="@+id/getProfileAdminBtn"
@@ -130,7 +130,7 @@
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            android:src="@drawable/profile" />
+            android:src="@drawable/profile_orange" />
 
     </LinearLayout>
 

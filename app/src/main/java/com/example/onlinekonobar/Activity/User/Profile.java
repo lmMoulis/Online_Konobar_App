@@ -57,7 +57,7 @@ public class Profile extends Fragment {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
-    TextView name,countOrder,email,date,gender,password,logout,backQr;
+    TextView name,countOrder,email,date,password,logout,backQr;
     ImageView order,profilePicture;
     int orderNum;
     ProgressBar progressBar;
@@ -74,7 +74,7 @@ public class Profile extends Fragment {
 //        countOrder=view.findViewById(R.id.countOrderTxt);
         email=view.findViewById(R.id.emailProfileTxt);
         date=view.findViewById(R.id.dateProfileTxt);
-        gender=view.findViewById(R.id.genderProfileTxt);
+//        gender=view.findViewById(R.id.genderProfileTxt);
         backQr=view.findViewById(R.id.qrBackBtn);
         password=view.findViewById(R.id.passwordProfileTxt);
         order=view.findViewById(R.id.getOrders);
@@ -99,6 +99,15 @@ public class Profile extends Fragment {
 
             }
         });
+        backQr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getContext(), ScanQR.class);
+                startActivity(intent);
+            }
+        });
+
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,13 +167,22 @@ public class Profile extends Fragment {
         name.setText(user.getIme()+" "+user.getPrezime());
         email.setText(user.getEmail());
         date.setText(convertDateFormat(user.getDatum_Rodenja()));
-        gender.setText(user.getSpol());
+//        gender.setText(user.getSpol());
 
-        Glide.with(requireContext())
-                .load(user.getSlika())
-                .fitCenter()
-                .circleCrop()
-                .into(profilePicture);
+//        Glide.with(requireContext())
+//                .load(user.getSlika())
+//                .fitCenter()
+//                .circleCrop()
+//                .into(profilePicture);
+        if (user.getSlika() != null && !user.getSlika().isEmpty()) {
+            Glide.with(requireContext())
+                    .load(user.getSlika())
+                    .fitCenter()
+                    .circleCrop()
+                    .into(profilePicture);
+        } else {
+            profilePicture.setImageResource(R.drawable.user_profile);
+        }
     }
     public void getAllOrder()
     {

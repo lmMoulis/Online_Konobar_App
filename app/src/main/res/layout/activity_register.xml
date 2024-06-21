@@ -116,12 +116,13 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/input_text"
-                android:paddingLeft="10dp"
-                android:hint="Spol"
                 android:fontFamily="@font/kollektif"
-                android:textSize="18dp"
+                android:hint="Spol"
+                android:paddingLeft="10dp"
                 android:textColor="#969599"
-                android:textColorHint="#706F73" />
+                android:textColorHint="#706F73"
+                android:textSize="18dp"
+                android:visibility="gone" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/datumRodenjaInp"

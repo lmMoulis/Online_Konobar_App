@@ -7,7 +7,6 @@ public class RegisterRequest {
     private String Email;
     private String Lozinka;
     private String Broj_Mobitela;
-    private String Spol;
     private String Datum_Rodenja;
 
     public int getId() {
@@ -58,13 +57,6 @@ public class RegisterRequest {
         Broj_Mobitela = broj_Mobitela;
     }
 
-    public String getSpol() {
-        return Spol;
-    }
-
-    public void setSpol(String spol) {
-        Spol = spol;
-    }
 
     public String getDatum_Rodenja() {
         return Datum_Rodenja;

@@ -50,7 +50,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
             android:fontFamily="@font/kollektif"
-            android:text="Skeniraj QR kod kako bi vas znali na kojem ste stolu"
+            android:text="Odaberite stol skeniranjem QR koda"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="24sp" />
@@ -86,6 +86,15 @@
 
     <FrameLayout
         android:id="@+id/fragmentDetailInvoiceUserFalse"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <FrameLayout
+        android:id="@+id/fragmentDetailInvoiceUser"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"

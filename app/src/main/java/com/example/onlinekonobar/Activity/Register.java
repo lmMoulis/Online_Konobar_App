@@ -75,6 +75,9 @@ public class Register extends AppCompatActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat("dd. MMMM yyyy.", new Locale("hr", "HR"));
                         String selectedDateString = sdf.format(selectedDate.getTime());
                         datum.setText(selectedDateString);
+
+                        SimpleDateFormat sdfDatabase = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        regDatum = sdfDatabase.format(selectedDate.getTime());
                     }
                 }, year, month, dayOfMonth);
 
@@ -94,12 +97,11 @@ public class Register extends AppCompatActivity {
             public void onClick(View v) {
                 // Kreiranje objekta RegisterRequest s podacima iz EditText polja
                 RegisterRequest registerRequest = new RegisterRequest();
-                registerRequest.setId(1);
+
                 registerRequest.setIme(ime.getText().toString());
                 registerRequest.setPrezime(prezime.getText().toString());
                 registerRequest.setEmail(email.getText().toString());
                 registerRequest.setBroj_Mobitela(mob.getText().toString());
-                registerRequest.setSpol(spol.getText().toString());
                 registerRequest.setDatum_Rodenja(regDatum);
                 registerRequest.setLozinka(lozinka.getText().toString());
                 registerRequest.setLozinka(ponLozinka.getText().toString());
