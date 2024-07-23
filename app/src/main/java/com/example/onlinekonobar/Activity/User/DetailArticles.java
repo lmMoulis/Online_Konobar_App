@@ -26,12 +26,14 @@ import com.example.onlinekonobar.Activity.User.Adapter.CustomizeUserAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
+import com.example.onlinekonobar.Api.Normative;
 import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.UserService;
 import com.example.onlinekonobar.Activity.User.Adapter.ManagementCart;
 import com.example.onlinekonobar.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -211,7 +213,6 @@ public class DetailArticles extends Fragment {
                     // Handle unsuccessful response
                 }
             }
-
             @Override
             public void onFailure(Call<ArrayList<Customize>> call, Throwable t) {
                 // Handle failure
@@ -219,35 +220,70 @@ public class DetailArticles extends Fragment {
         });
     }
     private void checkStockAndUpdateQuantity(int articleId, boolean increment) {
-        userService.getStockByArticleId(articleId).enqueue(new Callback<Stock>() {
+        userService.getNormativeByArticleId(articleId).enqueue(new Callback<ArrayList<Normative>>() {
             @Override
-            public void onResponse(Call<Stock> call, Response<Stock> response) {
+            public void onResponse(Call<ArrayList<Normative>> call, Response<ArrayList<Normative>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Stock stock = response.body();
-                    if (increment && number + 1 <= stock.getKolicina()) {
-                        number++;
-                        numberItem.setText(number + "");
-                        totalPrice.setText(String.format("%.2f", number * object.getCijena()) + "€");
-                    } else if (!increment && number > 1) {
-                        number--;
-                        numberItem.setText(number + "");
-                        totalPrice.setText(String.format("%.2f", number * object.getCijena()) + "€");
+                    List<Normative> existingNormatives = response.body();
+                    if (existingNormatives != null) {
+                        int totalNormatives = existingNormatives.size();
+                        int[] checkedNormatives = {0};
+                        boolean[] canUpdate = {true};
+
+                        for (Normative normative : existingNormatives) {
+                            userService.getStockById(normative.Skladiste_Id).enqueue(new Callback<Stock>() {
+                                @Override
+                                public void onResponse(Call<Stock> call, Response<Stock> response) {
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        Stock stock = response.body();
+                                        int totalNormativeQuantity = normative.getNormativ() * (number + (increment ? 1 : -1));
+                                        if (increment && totalNormativeQuantity > stock.getKolicina()) {
+                                            canUpdate[0] = false;
+                                        } else if (!increment && number <= 1) {
+                                            canUpdate[0] = false;
+                                        }
+                                    } else {
+                                        canUpdate[0] = false;
+                                    }
+                                    checkedNormatives[0]++;
+                                    if (checkedNormatives[0] == totalNormatives) {
+                                        updateQuantityIfPossible(increment, canUpdate[0]);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Stock> call, Throwable t) {
+                                    Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     } else {
-                        Toast.makeText(context, "Nedovoljno artikala na skladištu.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Greška u dobavljanju normativa.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(context, "Greška prilikom provjere skladišta.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Greška prilikom provjere normativa.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Stock> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Normative>> call, Throwable t) {
                 Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-
+    private void updateQuantityIfPossible(boolean increment, boolean canUpdate) {
+        if (canUpdate) {
+            if (increment) {
+                number++;
+            } else {
+                number--;
+            }
+            numberItem.setText(number + "");
+            totalPrice.setText(String.format("%.2f", number * object.getCijena()) + "€");
+        } else {
+            Toast.makeText(context, "Nedovoljno artikala na skladištu.", Toast.LENGTH_SHORT).show();
+        }
+    }
     public void setVariable() {
         if (object != null) {
             title.setText(object.getNaziv());

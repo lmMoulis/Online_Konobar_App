@@ -57,7 +57,7 @@ public class Profile extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
     TextView name,countOrder,email,date,gender,password,logout,selectTabel;
-    ImageView order,takeOrder,profilePicture;
+    ImageView order,takeOrder,profilePicture,chartBtn;
     int orderNum;
     ProgressBar progressBar;
     int idUser;
@@ -77,6 +77,7 @@ public class Profile extends Fragment {
         password=view.findViewById(R.id.passwordProfileWaiterTxt);
         order=view.findViewById(R.id.getWaiterOrders);
         takeOrder=view.findViewById(R.id.takeOrderWaiter);
+        chartBtn=view.findViewById(R.id.chartWaiter);
         progressBar=view.findViewById(R.id.progressBarWaiterProfile);
         logout=view.findViewById(R.id.logoutWaiterBtn);
         profilePicture=view.findViewById(R.id.profileWaiterPic);
@@ -128,6 +129,18 @@ public class Profile extends Fragment {
                 fragmentTransaction.replace(R.id.profileFragmentWaiter, takeOrderFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+            }
+        });
+        chartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment barChart = new Chart();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.profileFragmentWaiter, barChart);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
             }
         });
         profilePicture.setOnLongClickListener(new View.OnLongClickListener() {

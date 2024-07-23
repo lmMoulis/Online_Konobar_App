@@ -101,7 +101,7 @@ public class StockAdminAdapter extends RecyclerView.Adapter<StockAdminAdapter.vi
                     Stock stock = response.body();
 
                         stock.setId(stock.getId());
-                        stock.setArtikal_Id(stock.getArtikal_Id());
+                        stock.setArtikal(stock.getArtikal());
                         stock.setDokument_Id(stock.getDokument_Id());
                         stock.setKorisnik_Id(stock.getKorisnik_Id());
                         stock.setKolicina(newQuantity);

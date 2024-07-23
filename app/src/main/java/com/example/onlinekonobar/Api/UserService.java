@@ -63,5 +63,10 @@ public interface UserService {
 
     @GET("api/Korisnik")
     Call<ArrayList<User>>getAllUsers();
+
+    @GET("api/NormativiControllers/article/{articleId}")
+    Call<ArrayList<Normative>>getNormativeByArticleId(@Path("articleId") int articleId);
+    @GET("api/SkladisteControllers/{id}")
+    Call<Stock> getStockById(@Path("id") int id);
 }
 

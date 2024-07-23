@@ -7,8 +7,8 @@ import java.io.Serializable;
 public class Stock implements Serializable {
     @SerializedName("id")
     public int Id;
-    @SerializedName("artikal_id")
-    public int Artikal_Id;
+    @SerializedName("artikal")
+    public String Artikal;
     @SerializedName("dokument_id")
     public int Dokument_Id;
     @SerializedName("korisnik_id")
@@ -25,12 +25,12 @@ public class Stock implements Serializable {
         Id = id;
     }
 
-    public int getArtikal_Id() {
-        return Artikal_Id;
+    public String getArtikal() {
+        return Artikal;
     }
 
-    public void setArtikal_Id(int artikal_Id) {
-        Artikal_Id = artikal_Id;
+    public void setArtikal(String artikal) {
+        Artikal = artikal;
     }
 
     public int getDokument_Id() {

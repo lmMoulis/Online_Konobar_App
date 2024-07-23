@@ -70,6 +70,7 @@ public class CartUserAdapter extends RecyclerView.Adapter<CartUserAdapter.viewho
                 itemsCustomize.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, items.size());
+
                 emptyStateChecker.run();
             }
         });

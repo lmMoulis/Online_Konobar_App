@@ -299,7 +299,7 @@ public class ManagementCart {
                             Stock existingStock = response.body();
                             if (existingStock != null) {
                                 existingStock.setId(existingStock.getId());
-                                existingStock.setArtikal_Id(item.getArtikal_Id());
+//                                existingStock.setArtikal_Id(item.getArtikal_Id());
                                 existingStock.setKolicina(existingStock.getKolicina() - item.getKolicina());
                                 userService.updateStock(existingStock.getId(), existingStock).enqueue(new Callback<Void>() {
                                     @Override
