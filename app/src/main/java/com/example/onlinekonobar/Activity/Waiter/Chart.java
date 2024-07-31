@@ -1,10 +1,12 @@
 package com.example.onlinekonobar.Activity.Waiter;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +47,7 @@ public class Chart extends Fragment {
     LinearLayout selectDate;
     TextView datum;
     String selectedDateString;
-    SimpleDateFormat databaseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+    SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
     SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd. MMMM yyyy.", new Locale("hr", "HR"));
     SimpleDateFormat comparisonDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
@@ -115,7 +117,7 @@ public class Chart extends Fragment {
 
                                             @Override
                                             public void onFailure(Call<ArrayList<Item>> call, Throwable throwable) {
-                                                Toast.makeText(getContext(), "Error fetching items", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), "Greska u dohvačanju stavki", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -124,7 +126,7 @@ public class Chart extends Fragment {
 
                             @Override
                             public void onFailure(Call<ArrayList<Invoice>> call, Throwable throwable) {
-                                Toast.makeText(getContext(), "Error fetching invoices", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Greška u dohvačanju računa", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -133,7 +135,7 @@ public class Chart extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<Article>> call, Throwable throwable) {
-                Toast.makeText(getContext(), "Error fetching articles", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Greška u dohvačanju artikala", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -145,11 +147,11 @@ public class Chart extends Fragment {
 
         for (Invoice invoice : allInvoices) {
             try {
-                String invoiceDateString = databaseDateFormat.format(databaseDateFormat.parse(invoice.getDatum()));
-                String invoiceDate = comparisonDateFormat.format(databaseDateFormat.parse(invoiceDateString));
+                String invoiceDateString = invoice.getDatum();
+                String invoiceDate = comparisonDateFormat.format(apiDateFormat.parse(invoiceDateString));
                 if (invoiceDate.equals(selectedDateString)) {
                     for (Item item : allItems) {
-                        if (item.getId() == invoice.getId()) {  // Assuming Item has a method getInvoiceId() that returns the invoice ID
+                        if (item.getId() == invoice.getId()) {
                             int quantity = item.getKolicina();
 
                             Article article = findArticleById(allArticles, item.getArtikal_Id());
@@ -160,7 +162,7 @@ public class Chart extends Fragment {
                     }
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
+                Log.e("Chart", "Date parsing error", e);
             }
         }
         return consumptionData;
@@ -189,19 +191,35 @@ public class Chart extends Fragment {
             index++;
         }
 
-        BarDataSet dataSet = new BarDataSet(entries, "Daily Consumption");
-        BarData barData = new BarData(dataSet);
-        chart.setData(barData);
+        if (entries.isEmpty()) {
+            Toast.makeText(getContext(), "Nema dostupnih podataka za odabrani datum", Toast.LENGTH_SHORT).show();
+        } else {
+            BarDataSet dataSet = new BarDataSet(entries, "Potrošnja po artiklima");
 
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-        chart.getXAxis().setGranularity(1f);
-        chart.getXAxis().setGranularityEnabled(true);
+            // Postavite tekst iznad barova
+            dataSet.setValueTextSize(15f); // Veličina teksta
+            dataSet.setValueTextColor(Color.WHITE); // Boja teksta
 
-        Description description = new Description();
-        description.setText("Daily Consumption of Articles");
-        chart.setDescription(description);
+            // Postavite boje barova
+            List<Integer> colors = new ArrayList<>();
+            for (int i = 0; i < entries.size(); i++) {
+                colors.add(Color.rgb((i * 30) % 255, (i * 60) % 255, (i * 90) % 255)); // Primer za različite boje
+            }
+            dataSet.setColors(colors);
 
-        chart.setFitBars(true);
-        chart.invalidate(); // Refresh chart
+            BarData barData = new BarData(dataSet);
+            chart.setData(barData);
+
+            chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+            chart.getXAxis().setGranularity(1f);
+            chart.getXAxis().setGranularityEnabled(true);
+
+            Description description = new Description();
+            description.setText("Potrošnja po artiklima"); // Postavljanje novog opisa grafika
+            chart.setDescription(description);
+
+            chart.setFitBars(true);
+            chart.invalidate(); // Osvežavanje grafika
+        }
     }
 }

@@ -6,12 +6,14 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.onlinekonobar.Activity.User.ScanQR;
 import com.example.onlinekonobar.Activity.Waiter.SelectTable;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Customize;
 import com.example.onlinekonobar.Api.Invoice;
 import com.example.onlinekonobar.Api.Item;
+import com.example.onlinekonobar.Api.Normative;
 import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.UserService;
 import com.example.onlinekonobar.TinyDB;
@@ -20,7 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -115,44 +120,81 @@ public class ManagementCart {
     }
 
     public void checkStockAndUpdateQuantity(int articleId, boolean increment, com.example.onlinekonobar.Activity.User.Adapter.ManagementCart.StockUpdateCallback callback) {
-        userService.getStockByArticleId(articleId).enqueue(new Callback<Stock>() {
+        userService.getNormativeByArticleId(articleId).enqueue(new Callback<ArrayList<Normative>>() {
             @Override
-            public void onResponse(Call<Stock> call, Response<Stock> response) {
+            public void onResponse(Call<ArrayList<Normative>> call, Response<ArrayList<Normative>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Stock stock = response.body();
+                    ArrayList<Normative> normatives = response.body();
                     ArrayList<Item> cartList = getListCart();
+                    List<Call<Stock>> stockCalls = new ArrayList<>();
 
-                    for (Item item : cartList) {
-                        if (item.getArtikal_Id() == articleId) {
-                            int newQuantity = increment ? item.getKolicina() + 1 : item.getKolicina() - 1;
+                    for (Normative normative : normatives) {
+                        stockCalls.add(userService.getStockById(normative.Skladiste_Id));
+                    }
+                    if (stockCalls.isEmpty()) {
+                        callback.onStockUpdate(false);
+                        return;
+                    }
 
-                            if (increment && newQuantity <= stock.getKolicina()) {
-                                item.setKolicina(newQuantity);
-                            } else if (!increment && item.getKolicina() > 1) {
-                                item.setKolicina(newQuantity);
-                            } else {
-                                Toast.makeText(context, "Nedovoljno artikala na skladištu.", Toast.LENGTH_SHORT).show();
-                                callback.onStockUpdate(false);
-                                return;
+                    List<Stock> stockList = new ArrayList<>();
+                    final int[] pendingRequests = {stockCalls.size()};
+
+                    for (Call<Stock> stockCall : stockCalls) {
+                        stockCall.enqueue(new Callback<Stock>() {
+                            @Override
+                            public void onResponse(Call<Stock> call, Response<Stock> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    stockList.add(response.body());
+                                }
+
+                                if (--pendingRequests[0] == 0) {
+                                    boolean canUpdate = true;
+                                    for (Item item : cartList) {
+                                        if (item.getArtikal_Id() == articleId) {
+                                            int newQuantity = increment ? item.getKolicina() + 1 : item.getKolicina() - 1;
+                                            for (int i = 0; i < normatives.size(); i++) {
+                                                Normative normative = normatives.get(i);
+                                                Stock stock = stockList.get(i);
+
+                                                if (increment && newQuantity * normative.Normativ > stock.getKolicina()) {
+                                                    canUpdate = false;
+                                                    break;
+                                                }
+                                            }
+                                            if (canUpdate) {
+                                                item.setKolicina(newQuantity);
+                                                tinyDB.putListObject("CartList", cartList);
+                                                if (updateTotalFeeCallback != null) {
+                                                    updateTotalFeeCallback.run();
+                                                }
+                                                callback.onStockUpdate(true);
+                                            } else {
+                                                Toast.makeText(context, "Nedovoljno artikala na skladištu.", Toast.LENGTH_SHORT).show();
+                                                callback.onStockUpdate(false);
+
+                                            }
+                                            return;
+                                        }
+                                    }
+                                }
                             }
-                            tinyDB.putListObject("CartList", cartList);
-                            if (updateTotalFeeCallback != null) {
-                                updateTotalFeeCallback.run(); // Pozivamo callback za ažuriranje ukupne cijene
+                            @Override
+                            public void onFailure(Call<Stock> call, Throwable t) {
+                                if (--pendingRequests[0] == 0) {
+                                    callback.onStockUpdate(false);
+                                }
                             }
-                            callback.onStockUpdate(true); // Pozivamo callback s true ako je ažuriranje uspjelo
-                            return;
-                        }
+                        });
                     }
                 } else {
-                    Toast.makeText(context, "Greška prilikom provjere skladišta.", Toast.LENGTH_SHORT).show();
-                    callback.onStockUpdate(false); // Pozivamo callback s false ako ažuriranje nije uspjelo
+                    Log.e("NormativeFetch", "Neuspješno dobavljanje normativa: " + response.code() + " - " + response.message());
+                    callback.onStockUpdate(false);
                 }
             }
-
             @Override
-            public void onFailure(Call<Stock> call, Throwable t) {
-                Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
-                callback.onStockUpdate(false); // Pozivamo callback s false ako ažuriranje nije uspjelo
+            public void onFailure(Call<ArrayList<Normative>> call, Throwable t) {
+                Log.e("NormativeFetch", "Greška u komunikaciji sa serverom prilikom dobavljanja normativa.", t);
+                callback.onStockUpdate(false);
             }
         });
     }
@@ -172,7 +214,7 @@ public class ManagementCart {
     public void clearCart() {
         ArrayList<Item> emptyList = new ArrayList<>();
         tinyDB.putListObject("CartList", emptyList);
-        Toast.makeText(context, "Košarica je očišćena", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Košarica je očišćena", Toast.LENGTH_SHORT).show();
         if (updateTotalFeeCallback != null) {
             updateTotalFeeCallback.run();
 
@@ -212,33 +254,30 @@ public class ManagementCart {
 
     }
     public void saveCartToDatabase(int userId) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("tablePref",Context.MODE_PRIVATE);
-        String table=sharedPreferences.getString("tableValue",null);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("QRPrefs", Context.MODE_PRIVATE);
+        String table = sharedPreferences.getString("qrValue", null);
         ArrayList<Item> cartList = getListCart();
         if (cartList != null && !cartList.isEmpty()) {
-
             String orderId = generateOrderId();
-
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
             sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
             String formattedDate = sdf.format(currentTime);
             float totalAmount = 0;
-            int dokument_Id=-1;
+            int dokument_Id = -1;
 
-            for(Item item:cartList){
-                totalAmount+=item.getCijena()*item.getKolicina();
-                dokument_Id=item.getDokument_Id();
-
+            for (Item item : cartList) {
+                totalAmount += item.getCijena() * item.getKolicina();
+                dokument_Id = item.getDokument_Id();
             }
-            Invoice invoice= new Invoice();
+
+            Invoice invoice = new Invoice();
             invoice.setDokument_Id(dokument_Id);
             invoice.setBroj_Racuna(orderId);
             invoice.setStatus("Aktivno");
             invoice.setUkupan_Iznos(totalAmount);
             invoice.setDatum(formattedDate);
             invoice.setKorisnik_Id(userId);
-            invoice.setKonobar_Id(userId);
             invoice.setPreuzeto(true);
             invoice.setStol(table);
 
@@ -260,72 +299,87 @@ public class ManagementCart {
                 }
             });
 
+            // Prikupiti normative i ažurirati stanje skladišta
+            Map<Integer, Integer> totalNormatives = new HashMap<>();
+
             for (Item item : cartList) {
                 item.setKorisnik_Id(userId);
                 item.setOrder_Id(orderId);
-                totalAmount += item.getCijena() * item.getKolicina();
 
-                Log.d("ManagementCart", "Spremam u bazu: " +
-                        "Artikal ID: " + item.getArtikal_Id() +
-                        ", Korisnik ID: " + item.getKorisnik_Id() +
-                        ", Dokument ID: " + item.getDokument_Id() +
-                        ", Količina: " + item.getKolicina() +
-                        ", Dodatak ID: " + item.getDodatak()+
-                        ". Cijena:"+ item.getCijena());
-
-                userService.saveCard(item).enqueue(new Callback<Void>() {
+                userService.getNormativeByArticleId(item.getArtikal_Id()).enqueue(new Callback<ArrayList<Normative>>() {
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    public void onResponse(Call<ArrayList<Normative>> call, Response<ArrayList<Normative>> response) {
                         if (response.isSuccessful()) {
-//                            Toast.makeText(context, "Podaci iz košarice su spremljeni.", Toast.LENGTH_SHORT).show();
-                            clearCart();
-
-                        } else {
-//                            Toast.makeText(context, "Greška prilikom spremanja podataka.", Toast.LENGTH_SHORT).show();
+                            List<Normative> existingNormatives = response.body();
+                            if (existingNormatives != null) {
+                                for (Normative normative : existingNormatives) {
+                                    int totalQuantity = totalNormatives.getOrDefault(normative.Skladiste_Id, 0) +
+                                            normative.Normativ * item.getKolicina();
+                                    totalNormatives.put(normative.Skladiste_Id, totalQuantity);
+                                }
+                                updateStockQuantities(totalNormatives);
+                            }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    public void onFailure(Call<ArrayList<Normative>> call, Throwable t) {
+                        Log.e("NormativeFetch", "Greška u komunikaciji sa serverom prilikom dobavljanja normativa.", t);
                         Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        }
+    }
 
-                // Prvo dohvatite trenutno stanje skladišta za dati artikal_id
-                userService.getStockByArticleId(item.getArtikal_Id()).enqueue(new Callback<Stock>() {
-                    @Override
-                    public void onResponse(Call<Stock> call, Response<Stock> response) {
-                        if (response.isSuccessful()) {
-                            Stock existingStock = response.body();
-                            if (existingStock != null) {
+    private void updateStockQuantities(Map<Integer, Integer> totalNormatives) {
+        for (Map.Entry<Integer, Integer> entry : totalNormatives.entrySet()) {
+            int skladisteId = entry.getKey();
+            int totalNormativeQuantity = entry.getValue();
+
+            userService.getStockById(skladisteId).enqueue(new Callback<Stock>() {
+                @Override
+                public void onResponse(Call<Stock> call, Response<Stock> response) {
+                    if (response.isSuccessful()) {
+                        Stock existingStock = response.body();
+                        if (existingStock != null) {
+                            int newStockQuantity = existingStock.getKolicina() - totalNormativeQuantity;
+                            if (newStockQuantity >= 0) {
                                 existingStock.setId(existingStock.getId());
-//                                existingStock.setArtikal_Id(item.getArtikal_Id());
-                                existingStock.setKolicina(existingStock.getKolicina() - item.getKolicina());
+                                existingStock.setArtikal(existingStock.getArtikal());
+                                existingStock.setDokument_Id(existingStock.getDokument_Id());
+                                existingStock.setKorisnik_Id(existingStock.getKorisnik_Id());
+                                existingStock.setKolicina(newStockQuantity);
+
+
                                 userService.updateStock(existingStock.getId(), existingStock).enqueue(new Callback<Void>() {
                                     @Override
                                     public void onResponse(Call<Void> call, Response<Void> response) {
+                                        if (response.isSuccessful()) {
+                                            Toast.makeText(context, "Stanje skladišta uspješno ažurirano.", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(context, "Greška u ažuriranju stanja skladišta.", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
 
                                     @Override
                                     public void onFailure(Call<Void> call, Throwable t) {
-                                        Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                                        Log.e("StockUpdate", "Greška u komunikaciji sa serverom prilikom ažuriranja stanja skladišta.", t);
                                     }
                                 });
                             } else {
+                                Toast.makeText(context, "Nedovoljno stavki na skladištu.", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<Stock> call, Throwable t) {
-                        Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-            }
-        } else {
-            Toast.makeText(context, "Košarica je prazna.", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<Stock> call, Throwable t) {
+                    Log.e("StockFetch", "Greška u komunikaciji sa serverom prilikom dobavljanja stanja skladišta.", t);
+                    Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

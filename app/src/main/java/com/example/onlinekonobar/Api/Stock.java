@@ -17,6 +17,7 @@ public class Stock implements Serializable {
     public int Kolicina;
 
 
+
     public int getId() {
         return Id;
     }
