@@ -209,6 +209,7 @@ public class ManagementCart {
             }
         }
         return 1;
+
     }
 
     public void clearCart() {
