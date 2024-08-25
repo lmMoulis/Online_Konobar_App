@@ -9,6 +9,46 @@
     tools:context=".Activity.Waiter.SelectTable">
 
     <LinearLayout
+        android:id="@+id/linearLayout18"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout15">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/stol4"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@drawable/table_white"
+            android:text="Stol-4"
+            android:textColor="#FFFFFF"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/stol5"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@drawable/table_white"
+            android:text="Stol-5"
+            android:textColor="#FFFFFF"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/stol6"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@drawable/table_white"
+            android:text="Stol-6"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linearLayout15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,30 +62,34 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/stol1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/orange_button"
-            android:text="Stol-1" />
+            android:background="@drawable/table_white"
+            android:text="Stol-1"
+            android:textColor="#FFFFFF" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/stol2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/orange_button"
-            android:text="Stol-2" />
+            android:background="@drawable/table_white"
+            android:text="Stol-2"
+            android:textColor="#FFFFFF"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/stol3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/orange_button"
-            android:text="Stol-3" />
+            android:background="@drawable/table_white"
+            android:text="Stol-3"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -54,31 +98,74 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout15">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout18">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/stol4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/stol7"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/orange_button"
-            android:text="Stol-4" />
+            android:background="@drawable/table_white"
+            android:text="Stol-7"
+            android:textColor="#FFFFFF"/>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/stol5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/stol8"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/orange_button"
-            android:text="Stol-5" />
+            android:background="@drawable/table_white"
+            android:text="Stol-8"
+            android:textColor="#FFFFFF"/>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/stol6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/stol9"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:background="@drawable/orange_button"
-            android:text="Stol-6" />
+            android:background="@drawable/table_white"
+            android:text="Stol-9"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout17"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout16">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/stol10"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@drawable/table_white"
+            android:text="Stol-10"
+            android:textColor="#FFFFFF" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/stol11"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@drawable/table_white"
+            android:text="Stol-11"
+            android:textColor="#FFFFFF" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/stol12"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@drawable/table_white"
+            android:text="Stol-12"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton

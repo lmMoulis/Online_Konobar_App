@@ -10,11 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.onlinekonobar.Activity.Waiter.Adapter.ArticleSpinnerAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.Invoice;
@@ -22,7 +26,8 @@ import com.example.onlinekonobar.Api.Item;
 import com.example.onlinekonobar.Api.UserService;
 import com.example.onlinekonobar.R;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -32,6 +37,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -44,12 +50,13 @@ import retrofit2.Response;
 public class Chart extends Fragment {
 
     BarChart chart;
-    LinearLayout selectDate;
+    LinearLayout selectDate, selectDring;
     TextView datum;
     String selectedDateString;
-    SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
+    SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
     SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd. MMMM yyyy.", new Locale("hr", "HR"));
     SimpleDateFormat comparisonDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    Spinner spinner, spinnerSelectChart,spinnerItems;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,7 +64,45 @@ public class Chart extends Fragment {
 
         chart = view.findViewById(R.id.barChart);
         selectDate = view.findViewById(R.id.selectDateChartWaiter);
+        selectDring= view.findViewById(R.id.linearSelectDrink);
         datum = view.findViewById(R.id.dateChart);
+        spinner=view.findViewById(R.id.spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.spinner_values,
+                R.layout.spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinnerSelectChart=view.findViewById(R.id.spinnerSelect);
+        ArrayAdapter<CharSequence> adapterChart = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.chart_value,
+                R.layout.spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSelectChart.setAdapter(adapterChart);
+        spinnerSelectChart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+
+                if (selectedItem.equals("Statistika pojedinog pića")) {
+                    selectDring.setVisibility(View.VISIBLE);
+                } else {
+                    selectDring.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+        spinnerItems=view.findViewById(R.id.spinnerDrink);
+        fetchArticles();
+
 
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,18 +124,52 @@ public class Chart extends Fragment {
                         selectedDateString = comparisonDateFormat.format(selectedDate.getTime());
                         datum.setText(displayDateFormat.format(selectedDate.getTime()));
 
-                        getChartData(selectedDate);
+                        // Dobijte broj dana iz spinner-a koristeći novu metodu
+                        int numberOfDays = extractNumberFromSpinner(spinner.getSelectedItem().toString());
+                        getChartData(selectedDate, numberOfDays);
                     }
                 }, year, month, dayOfMonth);
 
                 datePickerDialog.show();
             }
         });
+
+
+
         return view;
     }
+    private void fetchArticles() {
+        UserService service = Client.getService();
+        Call<ArrayList<Article>> call = service.getAllArticles();
+        call.enqueue(new Callback<ArrayList<Article>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Article>> call, Response<ArrayList<Article>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Article> articles = response.body();
+                    ArticleSpinnerAdapter adapter = new ArticleSpinnerAdapter(getContext(), articles);
+                    spinnerItems.setAdapter(adapter);
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<Article>> call, Throwable throwable) {
+                Toast.makeText(getContext(), "Greška u dohvaćanju artikala", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-    public void getChartData(Calendar selectedDate) {
+
+    private int extractNumberFromSpinner(String text) {
+        // Koristimo regularni izraz da izvučemo prvi broj u stringu
+        String number = text.replaceAll("\\D+", ""); // Uklanja sve što nije broj
+        return Integer.parseInt(number);
+    }
+
+    public void getChartData(Calendar selectedDate, int numberOfDays) {
         UserService userService = Client.getService();
+
+        Calendar startDate = (Calendar) selectedDate.clone();
+        startDate.add(Calendar.DAY_OF_YEAR, -numberOfDays);
+
         userService.getAllArticles().enqueue(new Callback<ArrayList<Article>>() {
             @Override
             public void onResponse(Call<ArrayList<Article>> call, Response<ArrayList<Article>> response) {
@@ -109,15 +188,22 @@ public class Chart extends Fragment {
                                                 if (response.isSuccessful()) {
                                                     ArrayList<Item> allItems = response.body();
                                                     if (allItems != null && !allItems.isEmpty()) {
-                                                        Map<String, Integer> consumptionData = processConsumptionData(allArticles, allInvoices, allItems, selectedDate);
-                                                        displayChart(consumptionData);
+                                                        String selectedChartType = spinnerSelectChart.getSelectedItem().toString();
+                                                        if (selectedChartType.equals("Statistika pojedinog pića")) {
+                                                            Article selectedArticle = (Article) spinnerItems.getSelectedItem();
+                                                            Map<String, Integer> dailySales = processDailySalesData(allInvoices, allItems, selectedArticle, startDate, selectedDate);
+                                                            displayChart(dailySales);
+                                                        } else {
+                                                            Map<String, Integer> consumptionData = processConsumptionData(allArticles, allInvoices, allItems, startDate, selectedDate);
+                                                            displayChart(consumptionData);
+                                                        }
                                                     }
                                                 }
                                             }
 
                                             @Override
                                             public void onFailure(Call<ArrayList<Item>> call, Throwable throwable) {
-                                                Toast.makeText(getContext(), "Greska u dohvačanju stavki", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), "Greška u dohvaćanju stavki", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -126,7 +212,7 @@ public class Chart extends Fragment {
 
                             @Override
                             public void onFailure(Call<ArrayList<Invoice>> call, Throwable throwable) {
-                                Toast.makeText(getContext(), "Greška u dohvačanju računa", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Greška u dohvaćanju računa", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -135,26 +221,65 @@ public class Chart extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<Article>> call, Throwable throwable) {
-                Toast.makeText(getContext(), "Greška u dohvačanju artikala", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Greška u dohvaćanju artikala", Toast.LENGTH_SHORT).show();
             }
         });
     }
+    private Map<String, Integer> processDailySalesData(ArrayList<Invoice> allInvoices, ArrayList<Item> allItems, Article selectedArticle, Calendar startDate, Calendar endDate) {
+        Map<String, Integer> dailySales = new HashMap<>();
 
-    private Map<String, Integer> processConsumptionData(ArrayList<Article> allArticles, ArrayList<Invoice> allInvoices, ArrayList<Item> allItems, Calendar selectedDate) {
+        String startDateString = comparisonDateFormat.format(startDate.getTime());
+        String endDateString = comparisonDateFormat.format(endDate.getTime());
+
+        Calendar currentDate = (Calendar) startDate.clone();
+        while (!currentDate.after(endDate)) {
+            String dateString = comparisonDateFormat.format(currentDate.getTime());
+            dailySales.put(dateString, 0);
+            currentDate.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        for (Invoice invoice : allInvoices) {
+            try {
+                Date invoiceDate = apiDateFormat.parse(invoice.getDatum());
+                String invoiceDateString = comparisonDateFormat.format(invoiceDate);
+
+                if (invoiceDateString.compareTo(startDateString) >= 0 && invoiceDateString.compareTo(endDateString) <= 0) {
+                    for (Item item : allItems) {
+                        if (item.getArtikal_Id() == selectedArticle.getId() && item.getOrder_Id().equals(invoice.getBroj_Racuna())) {
+                            dailySales.put(invoiceDateString, dailySales.get(invoiceDateString) + item.getKolicina());
+                        }
+                    }
+                }
+            } catch (ParseException e) {
+                Log.e("Chart", "Date parsing error", e);
+            }
+        }
+
+        return dailySales;
+    }
+
+    private Map<String, Integer> processConsumptionData(ArrayList<Article> allArticles, ArrayList<Invoice> allInvoices, ArrayList<Item> allItems, Calendar startDate, Calendar selectedDate) {
         Map<String, Integer> consumptionData = new HashMap<>();
 
+        // Formatirajte početni i krajnji datum
+        String startDateString = comparisonDateFormat.format(startDate.getTime());
         String selectedDateString = comparisonDateFormat.format(selectedDate.getTime());
 
         for (Invoice invoice : allInvoices) {
             try {
                 String invoiceDateString = invoice.getDatum();
-                String invoiceDate = comparisonDateFormat.format(apiDateFormat.parse(invoiceDateString));
-                if (invoiceDate.equals(selectedDateString)) {
-                    for (Item item : allItems) {
-                        if (item.getId() == invoice.getId()) {
-                            int quantity = item.getKolicina();
+                Date invoiceDate = apiDateFormat.parse(invoiceDateString);
 
+                // Formatirajte datum računa da uklonite vremenski deo
+                String invoiceDateOnly = comparisonDateFormat.format(invoiceDate);
+
+                // Proverite da li je datum računa unutar vremenskog opsega
+                if (invoiceDateOnly.compareTo(startDateString) >= 0 && invoiceDateOnly.compareTo(selectedDateString) <= 0) {
+                    for (Item item : allItems) {
+                        if (item.getOrder_Id().equals(invoice.getBroj_Racuna())) {
+                            int quantity = item.getKolicina();
                             Article article = findArticleById(allArticles, item.getArtikal_Id());
+
                             if (article != null) {
                                 consumptionData.put(article.getNaziv(), consumptionData.getOrDefault(article.getNaziv(), 0) + quantity);
                             }
@@ -165,6 +290,7 @@ public class Chart extends Fragment {
                 Log.e("Chart", "Date parsing error", e);
             }
         }
+
         return consumptionData;
     }
 
@@ -210,16 +336,29 @@ public class Chart extends Fragment {
             BarData barData = new BarData(dataSet);
             chart.setData(barData);
 
-            chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-            chart.getXAxis().setGranularity(1f);
-            chart.getXAxis().setGranularityEnabled(true);
+            // Postavite boju teksta za X osu
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+            xAxis.setGranularity(1f);
+            xAxis.setGranularityEnabled(true);
+            xAxis.setTextColor(Color.WHITE); // Postavljanje boje teksta za X osu
+            xAxis.setLabelRotationAngle(-90f);
+            chart.setPadding(30, 200, 30, 30); // Povećajte gornji padding
+            chart.getLayoutParams().height = 1200; // Povećajte visinu grafika
 
-            Description description = new Description();
-            description.setText("Potrošnja po artiklima"); // Postavljanje novog opisa grafika
-            chart.setDescription(description);
+
+
+            // Postavite boju teksta za Y osu (levu)
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setTextColor(Color.WHITE); // Postavljanje boje teksta za levu Y osu
+
+            // Postavite boju teksta za Y osu (desnu)
+            YAxis rightAxis = chart.getAxisRight();
+            rightAxis.setTextColor(Color.WHITE); // Postavljanje boje teksta za desnu Y osu
 
             chart.setFitBars(true);
             chart.invalidate(); // Osvežavanje grafika
         }
     }
+
 }

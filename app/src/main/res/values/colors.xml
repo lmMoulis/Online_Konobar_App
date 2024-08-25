@@ -5,4 +5,5 @@
     <color name="defaultTextColor">#FFFFFF</color>
     <color name="selectedTextColor">#FF9F0F</color>
     <color name="radioButtonColor">#FF9F0F</color>
+    <color name="spinnerTextColor">#706F73</color>
 </resources>

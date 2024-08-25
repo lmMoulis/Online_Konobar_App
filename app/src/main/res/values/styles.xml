@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">dropDownMenuExample</string>
-    <string-array name="languages">
-        <item>1 Dan</item>
-        <item>10 Dana</item>
-        <item>"20 Dana"</item>
-        <item>"30 Dana"</item>
-    </string-array>
+    <style name="CustomSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:textColor">#FF0000</item> <!-- Zamenite sa željenom bojom -->
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

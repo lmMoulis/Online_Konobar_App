@@ -163,17 +163,10 @@ public class Profile extends Fragment {
     }
     public void updateUI(User user)
     {
-//        countOrder.setText(orderNum+"");
         name.setText(user.getIme()+" "+user.getPrezime());
         email.setText(user.getEmail());
         date.setText(convertDateFormat(user.getDatum_Rodenja()));
-//        gender.setText(user.getSpol());
 
-//        Glide.with(requireContext())
-//                .load(user.getSlika())
-//                .fitCenter()
-//                .circleCrop()
-//                .into(profilePicture);
         if (user.getSlika() != null && !user.getSlika().isEmpty()) {
             Glide.with(requireContext())
                     .load(user.getSlika())

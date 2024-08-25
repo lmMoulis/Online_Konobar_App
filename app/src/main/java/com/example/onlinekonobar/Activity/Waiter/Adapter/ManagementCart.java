@@ -258,10 +258,11 @@ public class ManagementCart {
         SharedPreferences sharedPreferences = context.getSharedPreferences("QRPrefs", Context.MODE_PRIVATE);
         String table = sharedPreferences.getString("qrValue", null);
         ArrayList<Item> cartList = getListCart();
+
         if (cartList != null && !cartList.isEmpty()) {
             String orderId = generateOrderId();
             Date currentTime = Calendar.getInstance().getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
             sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
             String formattedDate = sdf.format(currentTime);
             float totalAmount = 0;
@@ -287,8 +288,7 @@ public class ManagementCart {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(context, "Narudžba je kreirana", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(context, SelectTable.class);
-                        context.startActivity(intent);
+                        saveItemsToDatabase(cartList, orderId, userId);  // Poziv za spremanje stavki
                     } else {
                         Toast.makeText(context, "Greška prilikom kreiranja narudžbe.", Toast.LENGTH_SHORT).show();
                     }
@@ -299,37 +299,55 @@ public class ManagementCart {
                     Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
 
-            // Prikupiti normative i ažurirati stanje skladišta
-            Map<Integer, Integer> totalNormatives = new HashMap<>();
+    private void saveItemsToDatabase(ArrayList<Item> cartList, String orderId, int userId) {
+        Map<Integer, Integer> totalNormatives = new HashMap<>();
+        int[] pendingSaves = {cartList.size()};
 
-            for (Item item : cartList) {
-                item.setKorisnik_Id(userId);
-                item.setOrder_Id(orderId);
+        for (Item item : cartList) {
+            item.setKorisnik_Id(userId);
+            item.setOrder_Id(orderId);
 
-                userService.getNormativeByArticleId(item.getArtikal_Id()).enqueue(new Callback<ArrayList<Normative>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<Normative>> call, Response<ArrayList<Normative>> response) {
-                        if (response.isSuccessful()) {
-                            List<Normative> existingNormatives = response.body();
-                            if (existingNormatives != null) {
-                                for (Normative normative : existingNormatives) {
-                                    int totalQuantity = totalNormatives.getOrDefault(normative.Skladiste_Id, 0) +
-                                            normative.Normativ * item.getKolicina();
-                                    totalNormatives.put(normative.Skladiste_Id, totalQuantity);
+            // Spremanje stavke u bazu
+            userService.saveCard(item).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        userService.getNormativeByArticleId(item.getArtikal_Id()).enqueue(new Callback<ArrayList<Normative>>() {
+                            @Override
+                            public void onResponse(Call<ArrayList<Normative>> call, Response<ArrayList<Normative>> response) {
+                                if (response.isSuccessful()) {
+                                    List<Normative> existingNormatives = response.body();
+                                    if (existingNormatives != null) {
+                                        for (Normative normative : existingNormatives) {
+                                            int totalQuantity = totalNormatives.getOrDefault(normative.Skladiste_Id, 0) +
+                                                    normative.Normativ * item.getKolicina();
+                                            totalNormatives.put(normative.Skladiste_Id, totalQuantity);
+                                        }
+                                    }
                                 }
-                                updateStockQuantities(totalNormatives);
+                                if (--pendingSaves[0] == 0) {
+                                    updateStockQuantities(totalNormatives);
+                                    clearCart();  // Čistimo košaricu tek nakon što su svi podaci spremljeni
+                                }
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ArrayList<Normative>> call, Throwable t) {
-                        Log.e("NormativeFetch", "Greška u komunikaciji sa serverom prilikom dobavljanja normativa.", t);
-                        Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onFailure(Call<ArrayList<Normative>> call, Throwable t) {
+                                Log.e("NormativeFetch", "Greška u komunikaciji sa serverom prilikom dobavljanja normativa.", t);
+                                Toast.makeText(context, "Greška u komunikaciji sa serverom.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                });
-            }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e("ItemSave", "Greška u komunikaciji sa serverom prilikom spremanja stavke.", t);
+                }
+            });
         }
     }
 
