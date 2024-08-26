@@ -21,7 +21,7 @@ public class ArticleSpinnerAdapter extends ArrayAdapter<Article> {
     public View getView(int position, View convertView, ViewGroup parent) {
         Article article = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
         }
         TextView textView = convertView.findViewById(android.R.id.text1);
         if (article != null) {

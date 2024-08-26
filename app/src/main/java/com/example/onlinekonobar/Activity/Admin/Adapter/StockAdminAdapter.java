@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.onlinekonobar.Activity.User.Adapter.ManagementCart;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Client;
+import com.example.onlinekonobar.Api.Remaining;
 import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.User;
 import com.example.onlinekonobar.Api.UserService;
@@ -29,14 +30,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StockAdminAdapter extends RecyclerView.Adapter<StockAdminAdapter.viewholder> {
-    private ArrayList<Article> items;
+
     private ArrayList<Stock> itemsStock;
+    private ArrayList<Remaining>itemsRemaining;
     private Context context;
     private int idUser;
 
-    public StockAdminAdapter(ArrayList<Article> items, ArrayList<Stock> itemsStock, Context context, int idUser) {
-        this.items = items;
+    public StockAdminAdapter(ArrayList<Stock> itemsStock, ArrayList<Remaining>itemsRemaining,Context context, int idUser) {
         this.itemsStock = itemsStock;
+        this.itemsRemaining=itemsRemaining;
         this.context = context;
         this.idUser = idUser;
     }
@@ -51,12 +53,14 @@ public class StockAdminAdapter extends RecyclerView.Adapter<StockAdminAdapter.vi
 
     @Override
     public void onBindViewHolder(@NonNull viewholder holder, int position) {
-        Article article = items.get(position);
+
         Stock stock = itemsStock.get(position);
-        holder.title.setText(article.getNaziv());
+        Remaining remaining = itemsRemaining.get(position);
+        holder.title.setText(stock.getArtikal());
         holder.number.setText(String.valueOf(stock.getKolicina()));
+        holder.day.setText(remaining.getDays_Remaining()+" dana");
         Glide.with(context)
-                .load(items.get(position).getSlika())
+                .load(itemsStock.get(position).getSlike())
                 .transform(new FitCenter(),new RoundedCorners(20))
                 .into(holder.img);
 
@@ -76,11 +80,11 @@ public class StockAdminAdapter extends RecyclerView.Adapter<StockAdminAdapter.vi
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return itemsStock.size();
     }
 
     public static class viewholder extends RecyclerView.ViewHolder {
-        TextView title, number;
+        TextView title, number,day;
         ImageView img,plus,minus;
 
         public viewholder(@NonNull View itemView) {
@@ -90,6 +94,7 @@ public class StockAdminAdapter extends RecyclerView.Adapter<StockAdminAdapter.vi
             img = itemView.findViewById(R.id.stockAdminImg);
             plus=itemView.findViewById(R.id.stockPlusBtn);
             minus=itemView.findViewById(R.id.stockMinusBtn);
+            day=itemView.findViewById(R.id.stockDay);
         }
     }
     private void updateQuantity(int stockId, int newQuantity, viewholder holder, boolean increment) {

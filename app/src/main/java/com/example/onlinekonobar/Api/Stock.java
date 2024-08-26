@@ -15,6 +15,8 @@ public class Stock implements Serializable {
     public int Korisnik_Id;
     @SerializedName("kolicina")
     public int Kolicina;
+    @SerializedName("slike")
+    public String Slike;
 
 
 
@@ -56,5 +58,13 @@ public class Stock implements Serializable {
 
     public void setKolicina(int kolicina) {
         Kolicina = kolicina;
+    }
+
+    public String getSlike() {
+        return Slike;
+    }
+
+    public void setSlike(String slike) {
+        Slike = slike;
     }
 }

@@ -29,6 +29,7 @@ import com.example.onlinekonobar.Adapter.CategoryAdapter;
 import com.example.onlinekonobar.Api.Article;
 import com.example.onlinekonobar.Api.Category;
 import com.example.onlinekonobar.Api.Client;
+import com.example.onlinekonobar.Api.Remaining;
 import com.example.onlinekonobar.Api.UserService;
 import com.example.onlinekonobar.R;
 
@@ -49,7 +50,7 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
     RecyclerView category;
     ImageView searchBtn;
     EditText inputSearch;
-    ImageButton home,newWaiter,allOrder,profile;
+    ImageButton home, newWaiter, allOrder, profile;
     int idUser;
 
     @Override
@@ -57,18 +58,18 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock);
 
-        progressBar=findViewById(R.id.adminProgressBar);
-        article=findViewById(R.id.adminArticleRecycler);
-        category=findViewById(R.id.adminCategoryRecycler);
-        searchBtn=findViewById(R.id.adminSearchBtn);
-        inputSearch=findViewById(R.id.adminSearchInp);
-        home=findViewById(R.id.getHomeAdminBtn);
-        newWaiter=findViewById(R.id.getNewWaiterBtn);
-        allOrder=findViewById(R.id.getAllOrdersBtn);
-        profile=findViewById(R.id.getProfileAdminBtn);
+        progressBar = findViewById(R.id.adminProgressBar);
+        article = findViewById(R.id.adminArticleRecycler);
+        category = findViewById(R.id.adminCategoryRecycler);
+        searchBtn = findViewById(R.id.adminSearchBtn);
+        inputSearch = findViewById(R.id.adminSearchInp);
+        home = findViewById(R.id.getHomeAdminBtn);
+        newWaiter = findViewById(R.id.getNewWaiterBtn);
+        allOrder = findViewById(R.id.getAllOrdersBtn);
+        profile = findViewById(R.id.getProfileAdminBtn);
 
         getIntentExtra();
-        catId=0;
+        catId = 0;
         initCategory();
         initList();
         searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -148,19 +149,20 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
         });
 
     }
+
     @Override
     public void onCategoryClicked(int categoryId) {
         // Ovdje primite CategoryId i izvršite željene radnje
         Log.d("Category", "Kategorija ID: " + categoryId);
-        if(categoryId==catId) {
-            catId=0;
+        if (categoryId == catId) {
+            catId = 0;
+        } else {
+            catId = categoryId;
         }
-        else {
-            catId=categoryId;}
-            initList();
+        initList();
     }
-    public void initCategory()
-    {
+
+    public void initCategory() {
         UserService service = Client.getService();
         Call<ArrayList<com.example.onlinekonobar.Api.Category>> call;
         call = service.getAllCategory();
@@ -173,7 +175,7 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
                         for (com.example.onlinekonobar.Api.Category category : list) {
                             Log.d("Category", "Title: " + category.getNaziv());
                         }
-                        category.setLayoutManager(new LinearLayoutManager(Stock.this, LinearLayoutManager.HORIZONTAL,false));
+                        category.setLayoutManager(new LinearLayoutManager(Stock.this, LinearLayoutManager.HORIZONTAL, false));
                         adapterListCategory = new CategoryAdapter(list);
                         category.setAdapter(adapterListCategory);
 
@@ -186,6 +188,7 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
                     // Handle unsuccessful response
                 }
             }
+
             @Override
             public void onFailure(Call<ArrayList<com.example.onlinekonobar.Api.Category>> call, Throwable t) {
             }
@@ -196,70 +199,73 @@ public class Stock extends AppCompatActivity implements CategoryAdapter.Category
         progressBar.setVisibility(View.VISIBLE);
 
         UserService service = Client.getService();
-        Call<ArrayList<Article>> call = service.getAllArticles();
         Call<ArrayList<com.example.onlinekonobar.Api.Stock>> callStock = service.getAllStock();
+        Call<ArrayList<Remaining>> callRemaining = service.getRemainingDaysAll();
 
-        call.enqueue(new Callback<ArrayList<Article>>() {
+        callStock.enqueue(new Callback<ArrayList<com.example.onlinekonobar.Api.Stock>>() {
             @Override
-            public void onResponse(Call<ArrayList<Article>> call, Response<ArrayList<Article>> response) {
+            public void onResponse(Call<ArrayList<com.example.onlinekonobar.Api.Stock>> call, Response<ArrayList<com.example.onlinekonobar.Api.Stock>> response) {
+                progressBar.setVisibility(View.GONE);
+
                 if (response.isSuccessful()) {
-                    ArrayList<Article> list = response.body();
-                    if (list != null && !list.isEmpty()) {
+                    final ArrayList<com.example.onlinekonobar.Api.Stock> listStock = response.body();
+
+                    if (listStock != null && !listStock.isEmpty()) {
+                        ArrayList<com.example.onlinekonobar.Api.Stock> filteredListStock = listStock;
+
                         if (isSearch) {
-                            list = filterArticles(list);
-                        } else if (catId != 0) {
-                            list = filterArticlesByCategory(list, catId);
+                            filteredListStock = filterArticles(listStock);
                         }
 
-                        final ArrayList<Article> finalList = list;
+                        final ArrayList<com.example.onlinekonobar.Api.Stock> finalListStock = filteredListStock;
 
-                        callStock.enqueue(new Callback<ArrayList<com.example.onlinekonobar.Api.Stock>>() {
+                        callRemaining.enqueue(new Callback<ArrayList<Remaining>>() {
                             @Override
-                            public void onResponse(Call<ArrayList<com.example.onlinekonobar.Api.Stock>> call, Response<ArrayList<com.example.onlinekonobar.Api.Stock>> response) {
+                            public void onResponse(Call<ArrayList<Remaining>> call, Response<ArrayList<Remaining>> response) {
                                 if (response.isSuccessful()) {
-                                    ArrayList<com.example.onlinekonobar.Api.Stock> listStock = response.body();
-                                    if (listStock != null && !listStock.isEmpty()) {
+                                    ArrayList<Remaining> listRemaining = response.body();
+
+                                    if (listRemaining != null && !listRemaining.isEmpty()) {
                                         article.setLayoutManager(new GridLayoutManager(Stock.this, 1));
-                                        adapterListAdminDrink = new StockAdminAdapter(finalList, listStock, Stock.this, idUser);
+                                        adapterListAdminDrink = new StockAdminAdapter(finalListStock, listRemaining, Stock.this, idUser);
                                         article.setAdapter(adapterListAdminDrink);
                                     }
                                 }
-                                progressBar.setVisibility(View.GONE);
                             }
 
                             @Override
-                            public void onFailure(Call<ArrayList<com.example.onlinekonobar.Api.Stock>> call, Throwable throwable) {
-                                progressBar.setVisibility(View.GONE);
+                            public void onFailure(Call<ArrayList<Remaining>> call, Throwable throwable) {
+                                // Obradi grešku ako je potrebno
                             }
                         });
-
                     }
                 } else {
-                    // Handle unsuccessful response
-                    progressBar.setVisibility(View.GONE);
+                    // Obradi neuspešan odgovor ako je potrebno
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Article>> call, Throwable t) {
-                // Handle failure
+            public void onFailure(Call<ArrayList<com.example.onlinekonobar.Api.Stock>> call, Throwable throwable) {
                 progressBar.setVisibility(View.GONE);
+                // Opcionalno: Dodaj logiku za obradu greške ako je potrebno
             }
         });
     }
 
 
 
-    private ArrayList<Article> filterArticles(ArrayList<Article> articles) {
-        ArrayList<Article> filteredList = new ArrayList<>();
-        for (Article article : articles) {
-            if (article.getNaziv().toLowerCase().contains(searchText.toLowerCase())) {
-                filteredList.add(article);
+
+
+    private ArrayList<com.example.onlinekonobar.Api.Stock> filterArticles(ArrayList<com.example.onlinekonobar.Api.Stock> stocks) {
+        ArrayList<com.example.onlinekonobar.Api.Stock> filteredList = new ArrayList<>();
+        for (com.example.onlinekonobar.Api.Stock stock : stocks) {
+            if (stock.getArtikal().toLowerCase().contains(searchText.toLowerCase())) {
+                filteredList.add(stock);
             }
         }
         return filteredList;
     }
-    private ArrayList<Article>filterArticlesByCategory(ArrayList<Article>articles,int categoryId) {
+    private ArrayList<Article>filterArticlesByCategory(ArrayList<Article>articles, int categoryId) {
         ArrayList<Article> filteredList = new ArrayList<>();
         for (Article article : articles) {
             if (article.getKategorija_Id() == categoryId) {
