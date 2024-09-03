@@ -32,6 +32,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,8 +66,7 @@ public class Chart extends Fragment {
         chart = view.findViewById(R.id.barChart);
         selectDate = view.findViewById(R.id.selectDateChartWaiter);
         selectDring= view.findViewById(R.id.linearSelectDrink);
-        datum = view.findViewById(R.id.dateChart);
-        spinner=view.findViewById(R.id.spinner);
+
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 getContext(),
@@ -101,6 +101,7 @@ public class Chart extends Fragment {
 
 
         spinnerItems=view.findViewById(R.id.spinnerDrink);
+
         fetchArticles();
 
 
@@ -146,16 +147,23 @@ public class Chart extends Fragment {
             public void onResponse(Call<ArrayList<Article>> call, Response<ArrayList<Article>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Article> articles = response.body();
-                    ArticleSpinnerAdapter adapter = new ArticleSpinnerAdapter(getContext(), articles);
-                    spinnerItems.setAdapter(adapter);
+
+                    // Postavljanje adaptera za spinnerItems
+                    ArticleSpinnerAdapter adapterItems = new ArticleSpinnerAdapter(getContext(), articles);
+                    spinnerItems.setAdapter(adapterItems);
+
+
                 }
             }
+
             @Override
             public void onFailure(Call<ArrayList<Article>> call, Throwable throwable) {
                 Toast.makeText(getContext(), "Greška u dohvaćanju artikala", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
 
 
     private int extractNumberFromSpinner(String text) {
@@ -228,13 +236,10 @@ public class Chart extends Fragment {
     private Map<String, Integer> processDailySalesData(ArrayList<Invoice> allInvoices, ArrayList<Item> allItems, Article selectedArticle, Calendar startDate, Calendar endDate) {
         Map<String, Integer> dailySales = new HashMap<>();
 
-        String startDateString = comparisonDateFormat.format(startDate.getTime());
-        String endDateString = comparisonDateFormat.format(endDate.getTime());
-
         Calendar currentDate = (Calendar) startDate.clone();
         while (!currentDate.after(endDate)) {
             String dateString = comparisonDateFormat.format(currentDate.getTime());
-            dailySales.put(dateString, 0);
+            dailySales.put(formatDateForDisplay(dateString), 0);
             currentDate.add(Calendar.DAY_OF_YEAR, 1);
         }
 
@@ -243,10 +248,14 @@ public class Chart extends Fragment {
                 Date invoiceDate = apiDateFormat.parse(invoice.getDatum());
                 String invoiceDateString = comparisonDateFormat.format(invoiceDate);
 
-                if (invoiceDateString.compareTo(startDateString) >= 0 && invoiceDateString.compareTo(endDateString) <= 0) {
+                if (invoiceDateString.compareTo(comparisonDateFormat.format(startDate.getTime())) >= 0 &&
+                        invoiceDateString.compareTo(comparisonDateFormat.format(endDate.getTime())) <= 0) {
+
+                    String formattedDate = formatDateForDisplay(invoiceDateString);
+
                     for (Item item : allItems) {
                         if (item.getArtikal_Id() == selectedArticle.getId() && item.getOrder_Id().equals(invoice.getBroj_Racuna())) {
-                            dailySales.put(invoiceDateString, dailySales.get(invoiceDateString) + item.getKolicina());
+                            dailySales.put(formattedDate, dailySales.get(formattedDate) + item.getKolicina());
                         }
                     }
                 }
@@ -257,6 +266,17 @@ public class Chart extends Fragment {
 
         return dailySales;
     }
+
+    private String formatDateForDisplay(String dateString) {
+        try {
+            Date date = comparisonDateFormat.parse(dateString);
+            return displayDateFormat.format(date);
+        } catch (ParseException e) {
+            Log.e("Chart", "Date formatting error", e);
+            return dateString; // Vrati originalni string ako se desi greška
+        }
+    }
+
 
     private Map<String, Integer> processConsumptionData(ArrayList<Article> allArticles, ArrayList<Invoice> allInvoices, ArrayList<Item> allItems, Calendar startDate, Calendar selectedDate) {
         Map<String, Integer> consumptionData = new HashMap<>();
@@ -321,6 +341,18 @@ public class Chart extends Fragment {
             Toast.makeText(getContext(), "Nema dostupnih podataka za odabrani datum", Toast.LENGTH_SHORT).show();
         } else {
             BarDataSet dataSet = new BarDataSet(entries, "Potrošnja po artiklima");
+
+            // Sakrivanje količine iznad stupaca ako je količina 0
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getBarLabel(BarEntry barEntry) {
+                    if (barEntry.getY() == 0) {
+                        return ""; // Vraća prazan string ako je količina 0
+                    } else {
+                        return String.valueOf((int) barEntry.getY());
+                    }
+                }
+            });
 
             // Postavite tekst iznad barova
             dataSet.setValueTextSize(15f); // Veličina teksta

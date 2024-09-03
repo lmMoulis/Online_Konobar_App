@@ -8,20 +8,21 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.onlinekonobar.Api.Article;
+import com.example.onlinekonobar.R;
 
 import java.util.List;
 
 public class ArticleSpinnerAdapter extends ArrayAdapter<Article> {
 
     public ArticleSpinnerAdapter(Context context, List<Article> articles) {
-        super(context, android.R.layout.simple_spinner_item, articles);
+        super(context, R.layout.spinner_item, articles); // Promijenjeno ovdje
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Article article = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false); // Promijenjeno ovdje
         }
         TextView textView = convertView.findViewById(android.R.id.text1);
         if (article != null) {
@@ -32,6 +33,15 @@ public class ArticleSpinnerAdapter extends ArrayAdapter<Article> {
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return getView(position, convertView, parent);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false); // Promijenjeno ovdje
+        }
+        TextView textView = convertView.findViewById(android.R.id.text1);
+        Article article = getItem(position);
+        if (article != null) {
+            textView.setText(article.getNaziv());
+        }
+        return convertView;
     }
 }
+

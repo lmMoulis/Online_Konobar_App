@@ -56,7 +56,7 @@ public class ProfileAdmin extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
     TextView name,countOrder,email,date,password,logout;
-    ImageView order,takeOrder,profilePicture;
+    ImageView order,document,profilePicture;
     int orderNum;
     ProgressBar progressBar;
     int idUser;
@@ -75,6 +75,7 @@ public class ProfileAdmin extends Fragment {
 //        gender=view.findViewById(R.id.genderProfileAdminTxt);
         password=view.findViewById(R.id.passwordProfileAdminTxt);
         order=view.findViewById(R.id.getAdminOrders);
+        document=view.findViewById(R.id.takeDocumentAdmin);
 //        takeOrder=view.findViewById(R.id.takeOrderAdmin);
         progressBar=view.findViewById(R.id.progressBarAdminProfile);
         logout=view.findViewById(R.id.logoutAdminBtn);
@@ -107,6 +108,17 @@ public class ProfileAdmin extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.profileFragmentAdmin, invoiceFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+        document.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment documentFragment = new DocumentList();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.profileFragmentAdmin, documentFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

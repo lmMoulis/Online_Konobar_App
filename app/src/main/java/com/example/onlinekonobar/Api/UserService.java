@@ -69,8 +69,33 @@ public interface UserService {
     @GET("api/SkladisteControllers/{id}")
     Call<Stock> getStockById(@Path("id") int id);
 
-
     @GET("api/ArtikalControllers/days-remaining")
     Call<ArrayList<Remaining>>getRemainingDaysAll();
+
+    @GET("api/PrimkaControllers")
+    Call<ArrayList<Receipt>>getAllReceipt();
+    @POST("api/PrimkaControllers")
+    Call<Receipt> createReceipt(@Body Receipt receipt);
+    @PUT("api/PrimkaControllers/{id}")
+    Call<Void> updateReceipt(@Path("id") int id, @Body Receipt receipt);
+    // Promenite metodu ako API vraća listu objekata
+    @GET("api/PrimkaControllers/date")
+    Call<List<Receipt>> getReceiptsByStockIdAndDate(@Query("stockId") int stockId, @Query("date") String date);
+
+    @GET("api/OtpisControllers")
+    Call<ArrayList<Adjustment>>getAllAdjustment();
+    @POST("api/OtpisControllers")
+    Call<Adjustment> createAdjustment(@Body Adjustment adjustment);
+    @PUT("api/OtpisControllers/{id}")
+    Call<Void> updateAdjustment(@Path("id") int id, @Body Adjustment adjustment);
+    // Promenite metodu ako API vraća listu objekata
+    @GET("api/OtpisControllers/date")
+    Call<List<Adjustment>> getAdjustmentByStockIdAndDate(@Query("stockId") int stockId, @Query("date") String date);
+
+
+    @GET("api/SkladisteControllers/{id}")
+    Call<Stock> getStockDetails(@Path("id") int stockId);
+    @GET("api/PrimkaControllers/bydate") Call<ArrayList<Receipt>> getReceiptsByDate(@Query("date") String date);
+    @GET("api/OtpisControllers/bydate") Call<ArrayList<Adjustment>> getAdjustmentByDate(@Query("date") String date);
 }
 

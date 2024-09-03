@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="Title"
                 android:textColor="#FFFFFF"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,14 +108,14 @@
                 android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="5dp"
                 android:text="Dovoljno za "
                 android:textColor="#9E9E9E"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout21"
-                app:layout_constraintTop_toTopOf="@+id/linearLayout21" />
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout21"
+                app:layout_constraintStart_toStartOf="@+id/stockTitleAdminTxt"
+                app:layout_constraintTop_toBottomOf="@+id/stockTitleAdminTxt" />
 
             <TextView
                 android:id="@+id/stockDay"
@@ -132,37 +132,45 @@
                 app:layout_constraintTop_toTopOf="@+id/textView17" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonOne"
-                android:layout_width="30dp"
+                android:id="@+id/stockThousand"
+                android:layout_width="40dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="10dp"
                 android:background="@drawable/orange_button_light"
                 android:text="1000"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/buttonDeset"
-                app:layout_constraintTop_toTopOf="@+id/buttonDeset" />
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout21"
+                app:layout_constraintStart_toStartOf="@+id/stockTen" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonDeset"
-                android:layout_width="30dp"
+                android:id="@+id/stockTen"
+                android:layout_width="40dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="10dp"
                 android:background="@drawable/orange_button_light"
                 android:text="10"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/buttonTisucu"
-                app:layout_constraintTop_toTopOf="@+id/buttonTisucu" />
+                app:layout_constraintBottom_toTopOf="@+id/stockThousand"
+                app:layout_constraintStart_toStartOf="@+id/stockOne"
+                app:layout_constraintTop_toBottomOf="@+id/stockOne" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonTisucu"
-                android:layout_width="30dp"
+                android:id="@+id/stockOne"
+                android:layout_width="40dp"
                 android:layout_height="30dp"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/orange_button_light"
                 android:text="1"
                 android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/stockTitleAdminTxt" />
+
+            <Spinner
+                android:id="@+id/spinnerDoc"
+                android:layout_width="117dp"
+                android:layout_height="23dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout21"
-                app:layout_constraintStart_toStartOf="@+id/stockTitleAdminTxt"
-                app:layout_constraintTop_toBottomOf="@+id/stockTitleAdminTxt" />
+                app:layout_constraintStart_toStartOf="@+id/textView17"
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
