@@ -38,6 +38,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +68,8 @@ public class Chart extends Fragment {
         chart = view.findViewById(R.id.barChart);
         selectDate = view.findViewById(R.id.selectDateChartWaiter);
         selectDring= view.findViewById(R.id.linearSelectDrink);
-
+        spinner=view.findViewById(R.id.spinner);
+        datum=view.findViewById(R.id.dateChart);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 getContext(),
@@ -324,11 +327,29 @@ public class Chart extends Fragment {
     }
 
     private void displayChart(Map<String, Integer> consumptionData) {
+        // Dodavanje sortiranja podataka prema datumu
+        List<Map.Entry<String, Integer>> sortedConsumptionData = new ArrayList<>(consumptionData.entrySet());
+        Collections.sort(sortedConsumptionData, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> entry1, Map.Entry<String, Integer> entry2) {
+                try {
+                    // Sortiraj prema datumu koristeći displayDateFormat
+                    Date date1 = displayDateFormat.parse(entry1.getKey());
+                    Date date2 = displayDateFormat.parse(entry2.getKey());
+                    return date1.compareTo(date2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            }
+        });
+
+        // Kreiranje BarEntry i labels liste pomoću sortiranih podataka
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
         int index = 0;
 
-        for (Map.Entry<String, Integer> entry : consumptionData.entrySet()) {
+        for (Map.Entry<String, Integer> entry : sortedConsumptionData) {
             String articleName = entry.getKey();
             int quantity = entry.getValue();
 
@@ -354,7 +375,7 @@ public class Chart extends Fragment {
                 }
             });
 
-            // Postavite tekst iznad barova
+            // Postavite boju teksta i boje stupaca
             dataSet.setValueTextSize(15f); // Veličina teksta
             dataSet.setValueTextColor(Color.WHITE); // Boja teksta
 
@@ -374,23 +395,21 @@ public class Chart extends Fragment {
             xAxis.setGranularity(1f);
             xAxis.setGranularityEnabled(true);
             xAxis.setTextColor(Color.WHITE); // Postavljanje boje teksta za X osu
-            xAxis.setLabelRotationAngle(-90f);
-            chart.setPadding(30, 200, 30, 30); // Povećajte gornji padding
-            chart.getLayoutParams().height = 1200; // Povećajte visinu grafika
+            xAxis.setLabelRotationAngle(-90f); // Rotacija oznaka na X osi
+            chart.setPadding(30, 100, 30, 30); // Povećajte gornji padding
+            chart.getLayoutParams().height = 900; // Povećajte visinu grafika
 
-
-
-            // Postavite boju teksta za Y osu (levu)
+            // Postavite boju teksta za Y osi
             YAxis leftAxis = chart.getAxisLeft();
-            leftAxis.setTextColor(Color.WHITE); // Postavljanje boje teksta za levu Y osu
+            leftAxis.setTextColor(Color.WHITE); // Boja teksta za Y os (lijevo)
 
-            // Postavite boju teksta za Y osu (desnu)
             YAxis rightAxis = chart.getAxisRight();
-            rightAxis.setTextColor(Color.WHITE); // Postavljanje boje teksta za desnu Y osu
+            rightAxis.setTextColor(Color.WHITE); // Boja teksta za Y os (desno)
 
             chart.setFitBars(true);
             chart.invalidate(); // Osvežavanje grafika
         }
     }
+
 
 }

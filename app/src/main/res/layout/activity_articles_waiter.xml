@@ -161,7 +161,8 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/waiterScrollView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></FrameLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        ></FrameLayout>
 
     <FrameLayout
         android:id="@+id/fragmentInvoiceWaiter"
@@ -196,5 +197,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/waiterScrollView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></FrameLayout>
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

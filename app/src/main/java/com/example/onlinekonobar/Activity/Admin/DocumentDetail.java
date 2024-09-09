@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.onlinekonobar.Activity.Admin.Adapter.DocumentDetailsAdapter;
 import com.example.onlinekonobar.Activity.Admin.Adapter.DocumentListAdapter;
@@ -21,8 +22,12 @@ import com.example.onlinekonobar.Api.Stock;
 import com.example.onlinekonobar.Api.UserService;
 import com.example.onlinekonobar.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,11 +36,13 @@ import retrofit2.Response;
 public class DocumentDetail extends Fragment {
 
     private String date;
+    private TextView dateTxt;
     private String selectedDocument;
     private RecyclerView itemsList;
     private DocumentDetailsAdapter adapterDocument;
     private List<Stock> stockList = new ArrayList<>();
     private Context context;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +50,7 @@ public class DocumentDetail extends Fragment {
         View view = inflater.inflate(R.layout.fragment_document_detail, container, false);
 
         itemsList = view.findViewById(R.id.recyclerViewListDocutment);
+        dateTxt= view.findViewById(R.id.documentDateTxt);
         if (getArguments() != null) {
             date = getArguments().getString("selected_date");
             selectedDocument=getArguments().getString("selected_document");
@@ -53,6 +61,7 @@ public class DocumentDetail extends Fragment {
         } else if (selectedDocument.equals("Otpis")) {
             initListAdjustment();
         }
+        dateTxt.setText(String.valueOf(convertDateFormat(date)));
 
         return view;
     }
@@ -80,6 +89,7 @@ public class DocumentDetail extends Fragment {
                                             itemsList.setLayoutManager(new GridLayoutManager(getContext(), 1));
                                             adapterDocument = new DocumentDetailsAdapter(receiptItems, null,stockList,selectedDocument,getContext());
                                             itemsList.setAdapter(adapterDocument);
+
                                             Log.d("DocumentDetail", "All stocks loaded and updated in the adapter");
                                         }
                                     }
@@ -153,6 +163,19 @@ public class DocumentDetail extends Fragment {
                 Log.e("DocumentDetail", "Error fetching receipts", throwable);
             }
         });
+    }
+    public String convertDateFormat(String date) {
+        String newDateFormat = "";
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss", Locale.getDefault());
+        SimpleDateFormat targetFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        Log.d("convertDateFormat: ","Datum"+targetFormat);
+        try {
+            Date originalDate = originalFormat.parse(date);
+            newDateFormat = targetFormat.format(originalDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newDateFormat;
     }
 
 }

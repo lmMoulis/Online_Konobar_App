@@ -96,9 +96,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="0dp"
             android:layout_marginTop="20dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout27"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
@@ -110,6 +111,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout27"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@drawable/gray_backgorund_top_rounded"

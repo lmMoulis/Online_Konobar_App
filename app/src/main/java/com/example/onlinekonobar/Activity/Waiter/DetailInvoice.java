@@ -107,6 +107,8 @@ public class DetailInvoice extends Fragment {
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {
                                         refreshData();
+                                        storn.setEnabled(false);
+                                        storn.setAlpha(0.5f);
 
                                     } else {
                                         Toast.makeText(context, "Greška prilikom storniranja narudžbe.", Toast.LENGTH_SHORT).show();

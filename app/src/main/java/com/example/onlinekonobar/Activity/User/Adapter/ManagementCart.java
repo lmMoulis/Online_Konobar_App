@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -307,6 +308,13 @@ public class ManagementCart {
                     if (response.isSuccessful()) {
                         Toast.makeText(context, "Narudžba je kreirana", Toast.LENGTH_SHORT).show();
                         saveItemsToDatabase(cartList, orderId, userId);  // Poziv za spremanje stavki
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(context, ScanQR.class);
+                                context.startActivity(intent);
+                            }
+                        }, 1000);
                     } else {
                         Toast.makeText(context, "Greška prilikom kreiranja narudžbe.", Toast.LENGTH_SHORT).show();
                     }
@@ -394,7 +402,7 @@ public class ManagementCart {
                                     @Override
                                     public void onResponse(Call<Void> call, Response<Void> response) {
                                         if (response.isSuccessful()) {
-                                            Toast.makeText(context, "Stanje skladišta uspješno ažurirano.", Toast.LENGTH_SHORT).show();
+
                                         } else {
                                             Toast.makeText(context, "Greška u ažuriranju stanja skladišta.", Toast.LENGTH_SHORT).show();
                                         }
@@ -406,7 +414,7 @@ public class ManagementCart {
                                     }
                                 });
                             } else {
-                                Toast.makeText(context, "Nedovoljno stavki na skladištu.", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(context, "Nedovoljno stavki na skladištu.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.onlinekonobar.Activity.Admin.Stock;
 import com.example.onlinekonobar.Activity.User.ScanQR;
 import com.example.onlinekonobar.Activity.Waiter.Articles;
+import com.example.onlinekonobar.Activity.Waiter.SelectTable;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.LoginRequest;
 import com.example.onlinekonobar.Api.LoginResponse;
@@ -92,7 +93,7 @@ public class Login extends AppCompatActivity {
                                     intent = new Intent(Login.this, ScanQR.class);
                                     break;
                                 case 2:
-                                    intent = new Intent(Login.this, Articles.class);
+                                    intent = new Intent(Login.this, SelectTable.class);
                                     break;
                                 case 3:
                                     intent = new Intent(Login.this, Stock.class);

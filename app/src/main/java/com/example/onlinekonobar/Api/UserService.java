@@ -69,7 +69,7 @@ public interface UserService {
     @GET("api/SkladisteControllers/{id}")
     Call<Stock> getStockById(@Path("id") int id);
 
-    @GET("api/ArtikalControllers/days-remaining")
+    @GET("api/SkladisteControllers/days-remaining")
     Call<ArrayList<Remaining>>getRemainingDaysAll();
 
     @GET("api/PrimkaControllers")

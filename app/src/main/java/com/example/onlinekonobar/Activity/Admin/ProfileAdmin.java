@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintHelper;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.onlinekonobar.Activity.Login;
+import com.example.onlinekonobar.Activity.Waiter.Chart;
 import com.example.onlinekonobar.Activity.Waiter.InvoiceList;
 import com.example.onlinekonobar.Api.Client;
 import com.example.onlinekonobar.Api.User;
@@ -56,7 +59,7 @@ public class ProfileAdmin extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
     TextView name,countOrder,email,date,password,logout;
-    ImageView order,document,profilePicture;
+    ImageView order,document,profilePicture,chartBtn;
     int orderNum;
     ProgressBar progressBar;
     int idUser;
@@ -77,6 +80,7 @@ public class ProfileAdmin extends Fragment {
         order=view.findViewById(R.id.getAdminOrders);
         document=view.findViewById(R.id.takeDocumentAdmin);
 //        takeOrder=view.findViewById(R.id.takeOrderAdmin);
+        chartBtn=view.findViewById(R.id.takeStatisticAdmin);
         progressBar=view.findViewById(R.id.progressBarAdminProfile);
         logout=view.findViewById(R.id.logoutAdminBtn);
         profilePicture=view.findViewById(R.id.profileAdminPic);
@@ -104,12 +108,18 @@ public class ProfileAdmin extends Fragment {
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment invoiceFragment = new InvoiceListAdmin();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment invoiceListFragment = new InvoiceListAdmin();
+                FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.profileFragmentAdmin, invoiceFragment);
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null) {
+                        fragmentTransaction.hide(fragment);
+                    }
+                }
+                fragmentTransaction.replace(R.id.fragmentInvoiceListAdmin, invoiceListFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+
             }
         });
         document.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +131,18 @@ public class ProfileAdmin extends Fragment {
                 fragmentTransaction.replace(R.id.profileFragmentAdmin, documentFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+            }
+        });
+        chartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment barChart = new Chart();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.profileFragmentAdmin, barChart);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
             }
         });
 
